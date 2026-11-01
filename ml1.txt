@@ -1,0 +1,297 @@
+I checked your uploaded Jupyter Notebook, `ml1 (1).ipynb`. Let's understand it step by step in very simple English, so you can explain it to your practical examiner.
+
+# Experiment: Uber Fare Prediction using Machine Learning
+
+Your notebook contains a complete ML project
+
+## 1. What is this project?
+
+The main aim of this project is to predict the Uber ride fare using Machine Learning.
+
+For example:
+
+- A passenger books an Uber.
+- The system takes information such as distance, number of passengers, pickup time and day.
+- The Machine Learning model predicts the ride fare.
+
+You have used two algorithms:
+
+1. Linear Regression
+2. Random Forest Regression
+
+## 2. Importing libraries and loading dataset
+
+Your first code cell:
+
+```
+import pandas as pdimport numpy as npimport seaborn as snsimport matplotlib.pyplot as pltfrom sklearn.model_selection import train_test_splitfrom sklearn.linear_model import LinearRegressionfrom sklearn.ensemble import RandomForestRegressorfrom sklearn.metrics import mean_squared_error, r2_scoredf = pd.read_csv("uber.csv")df.head()print(df.info())print(df.isnull().sum())df = df.dropna()
+```
+
+Explanation of each library:
+
+| Library               | Why we use it                            |
+| --------------------- | ---------------------------------------- |
+| pandas                | To read and manage the dataset           |
+| numpy                 | To perform mathematical calculations     |
+| seaborn               | To create graphs                         |
+| matplotlib            | To display graphs                        |
+| train_test_split      | To divide data into training and testing |
+| LinearRegression      | To create Linear Regression model        |
+| RandomForestRegressor | To create Random Forest model            |
+| mean_squared_error    | To calculate prediction error            |
+| r2_score              | To measure model performance             |
+
+Important code explanations:
+
+- `pd.read_csv("uber.csv")` – Loads the Uber dataset.
+- `df.head()` – Displays the first five rows.
+- `df.info()` – Displays column names, data types and missing information.
+- `df.isnull().sum()` – Counts missing values in each column.
+- `df.dropna()` – Removes rows containing missing values.
+
+Your dataset contains 200,000 rows and 9 columns.
+
+Some columns are:
+
+- `fare_amount` – Uber ride fare.
+- `pickup_datetime` – Date and time of pickup.
+- `pickup_latitude` – Pickup location latitude.
+- `pickup_longitude` – Pickup location longitude.
+- `dropoff_latitude` – Destination latitude.
+- `dropoff_longitude` – Destination longitude.
+- `passenger_count` – Number of passengers.
+
+## 3. Calculate distance and clean the data
+
+Your second code cell:
+
+```
+df["distance"] = (    ((df['dropoff_latitude'] - df['pickup_latitude'])**2 +     (df['dropoff_longitude'] - df['pickup_longitude'])**2) * 0.5)df = df[(df['fare_amount'] > 0) & (df['fare_amount'] < 100)]df = df[(df['passenger_count'] > 0) & (df['passenger_count'] <= 6)]df = df[df['distance'] < 5]
+```
+
+Explanation:
+
+- First, the code calculates a distance-related value using pickup and drop-off coordinates.
+- It removes rides with fare less than or equal to 0.
+- It removes rides with fare equal to or greater than 100.
+- It keeps passenger counts between 1 and 6.
+- It removes rides whose calculated distance value is 5 or more.
+
+Why do we clean data?
+
+Because incorrect values and unusual records can affect Machine Learning predictions.
+
+Technical note: Your formula is not the standard Euclidean distance formula. It calculates half the sum of squared coordinate differences. It also does not calculate real-world distance in kilometres. This is something you should correct if your project requires actual geographical distance.
+
+## 4. Extract time features
+
+Your third code cell:
+
+```
+df['pickup_datetime'] = pd.to_datetime(df['pickup_datetime'])df['hour'] = df['pickup_datetime'].dt.hourdf['day_of_week'] = df['pickup_datetime'].dt.dayofweek
+```
+
+Explanation:
+
+- `pd.to_datetime()` converts the pickup date and time into date-time format.
+- `.dt.hour` extracts the pickup hour.
+- `.dt.dayofweek` extracts the day of the week.
+
+For example:
+
+| Pickup date and time | Hour | Day of week |
+| -------------------- | ---- | ----------- |
+| Monday, 10:30 AM     | 10   | 0           |
+| Tuesday, 6:00 PM     | 18   | 1           |
+| Sunday, 8:00 PM      | 20   | 6           |
+
+Why do we extract these values?
+
+Because ride fares and demand may change depending on pickup time and day.
+
+## 5. Data visualization
+
+Your fourth code cell:
+
+```
+sns.boxplot(x=df['fare_amount'])plt.title("Boxplot for Fare Amount (Outliers)")plt.show()corr = df[['fare_amount', 'distance',           'passenger_count', 'hour', 'day_of_week']].corr()sns.heatmap(corr, annot=True, cmap='coolwarm')plt.title("Correlation Matrix")plt.show()
+```
+
+You have created two graphs.
+
+## Graph 1: Boxplot
+
+[The Bayesian Bandit - An analysis of Uber fares](https://images.openai.com/static-rsc-4/O8ZR3ftb1yYzCGlIWp7X6zSxBMSBCBCTa1k0LGOKh2cPuhWFwsPl8tz2EULy7boC2EL5-KLE3jFp-Pc2PlAd5UyKGQN7fFf8ZKGJHL0SHayoxpEYGifJkIek32dCp9R-Flo-4TIenVvSnkDJ88Lp_xwHcJpeFF_KCdZ0GhODjSk?purpose=inline)
+
+- A boxplot displays the distribution of fare values.
+- It helps identify unusual values called outliers.
+- Outliers are values that are unusually far from most other values.
+
+## Graph 2: Correlation Heatmap
+
+[Unlocking Insights with Heatmaps: Correlation Analysis in Data Visualization | CodeSignal Learn](https://images.openai.com/static-rsc-4/q0mvOAQi1Hem7apER-f48ubF9xOql85hXw1ssxAY02G9ADTpaFRFhIcLqFAe6qxvU8u4YZRnibc56bWup_SL4w9we6TD4VTMVt7AAzUwdKsa_REVscaLd9HlKm7mc-PTqTnOxtmdLYOyWT9MlWYOhNaOqp-nXl8ljHWEmVPWGEw?purpose=inline)
+
+- A heatmap displays the relationship between numerical columns.
+- `corr()` calculates correlation.
+- `annot=True` displays the correlation numbers inside the graph.
+- `cmap='coolwarm'` sets the graph colour scheme.
+
+Why do we use visualization?
+
+To understand the data and find relationships between different columns before training the model.
+
+## 6. Select features and split the dataset
+
+Your fifth code cell:
+
+```
+X = df[['distance', 'passenger_count', 'hour', 'day_of_week']]y = df['fare_amount']X_train, X_test, y_train, y_test = train_test_split(    X, y, test_size=0.2, random_state=42)lr = LinearRegression()lr.fit(X_train, y_train)y_pred_lr = lr.predict(X_test)
+```
+
+Understand X and y:
+
+- `X` = Input features used to make predictions.
+- `y` = Output we want to predict.
+
+In your project:
+
+| X (Input)       | y (Output)  |
+| --------------- | ----------- |
+| Distance        | Fare amount |
+| Passenger count |             |
+| Pickup hour     |             |
+| Day of week     |             |
+
+What is train-test split?
+
+Your code divides the dataset into:
+
+## Dataset division
+
+80% Training data
+
+Used to teach the model
+
+20% Testing data
+
+Used to test predictions
+
+- `random_state=42` makes the data split reproducible.
+- `lr.fit()` trains the Linear Regression model.
+- `lr.predict()` predicts fare amounts for the testing data.
+
+## 7. Random Forest Regression
+
+Your sixth code cell:
+
+```
+rf = RandomForestRegressor(    n_estimators=100,    random_state=42)rf.fit(X_train, y_train)y_pred_rf = rf.predict(X_test)
+```
+
+What is Random Forest Regression?
+
+Random Forest is a Machine Learning algorithm that uses multiple decision trees to make predictions.
+
+- `RandomForestRegressor()` creates the model.
+- `n_estimators=100` means the model uses 100 decision trees.
+- `rf.fit()` trains the model.
+- `rf.predict()` predicts the fare amount.
+
+Why use Random Forest?
+
+It can learn more complex relationships in the data than simple Linear Regression.
+
+## 8. Evaluate both models
+
+Your seventh code cell:
+
+```
+def evaluate(y_true, y_pred, model_name):    rmse = np.sqrt(mean_squared_error(y_true, y_pred))    r2 = r2_score(y_true, y_pred)    print(f"{model_name} Results:")    print(f"R² Score: {r2:.4f}")    print(f"RMSE: {rmse:.4f}")
+```
+
+This function checks how well the models predict Uber fares.
+
+Two evaluation measures are used:
+
+1\. R² Score
+
+- Measures how well the model explains the variation in the fare.
+- A higher score is generally better.
+- A score closer to 1 indicates a better fit.
+
+2\. RMSE (Root Mean Squared Error)
+
+- Measures the difference between actual and predicted fares.
+- A lower RMSE is generally better.
+- It is expressed in the same unit as the fare amount.
+
+## 9. Final output of your notebook
+
+Your notebook gives this result:
+
+```
+Linear Regression Results:
+  R² Score: 0.0663
+  RMSE: 9.0284
+
+Random Forest Regression Results:
+  R² Score: 0.7542
+  RMSE: 4.6321
+```
+
+Comparison:
+
+| Evaluation | Linear Regression | Random Forest |
+| ---------- | ----------------- | ------------- |
+| R² Score   | 0.0663            | 0.7542        |
+| RMSE       | 9.0284            | 4.6321        |
+
+Better result: Random Forest
+
+Random Forest performs better in your notebook because:
+
+- Its R² score is higher.
+- Its RMSE is lower.
+- Its predictions fit the test data better.
+
+## 10. Important viva questions
+
+Q1. What is the aim of this experiment?
+
+To predict Uber ride fares using Machine Learning algorithms.
+
+Q2. Which dataset is used?
+
+Uber dataset (`uber.csv`).
+
+Q3. Which algorithms are used?
+
+Linear Regression and Random Forest Regression.
+
+Q4. What is the difference between training and testing data?
+
+Training data teaches the model, while testing data checks its performance.
+
+Q5. What is an outlier?
+
+An unusually high or low value compared with most other data values.
+
+Q6. What is RMSE?
+
+It measures the average size of prediction errors, giving more weight to larger errors.
+
+Q7. Which model performed better?
+
+Random Forest Regression.
+
+Q8. Why is Random Forest better in your result?
+
+It has a higher R² score and a lower RMSE.
+
+## Explain your project to the external examiner
+
+You can say:
+
+"My experiment is Uber Fare Prediction using Machine Learning. The main aim is to predict the fare amount based on ride information. First, I imported the required Python libraries and loaded the Uber dataset. Then I checked missing values and cleaned the data. After that, I extracted distance and time-related features. I used a boxplot and correlation heatmap for data visualization. Then I divided the dataset into 80% training data and 20% testing data. I trained two models: Linear Regression and Random Forest Regression. Finally, I evaluated both models using R² score and RMSE. In my results, Random Forest performed better than Linear Regression."
+
+My suggestion: Before your practical exam, understand the difference between `X`, `y`, `fit()`, `predict()`, R² and RMSE. These are very important concepts in this program.

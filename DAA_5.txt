@@ -1,0 +1,636 @@
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Deterministic Partition
+int deterministicPartition(vector<int>& arr, int low, int high) {
+
+    int pivot = arr[low];
+    int i = low;
+    int j = high;
+
+    while (i < j) {
+
+        while (i <= high - 1 && arr[i] <= pivot) {
+            i++;
+        }
+
+        while (j >= low + 1 && arr[j] > pivot) {
+            j--;
+        }
+
+        if (i < j) {
+            swap(arr[i], arr[j]);
+        }
+    }
+
+    swap(arr[low], arr[j]);
+
+    return j;
+}
+
+// Randomized Partition
+int randomizedPartition(vector<int>& arr, int low, int high) {
+
+    int randomIndex = low + rand() % (high - low + 1);
+
+    swap(arr[low], arr[randomIndex]);
+
+    return deterministicPartition(arr, low, high);
+}
+
+// Quick Sort Function
+void quickSortHelper(vector<int>& arr, int low, int high,
+                     bool isRandomized) {
+
+    if (low < high) {
+
+        int pIndex;
+
+        if (isRandomized) {
+            pIndex = randomizedPartition(arr, low, high);
+        }
+        else {
+            pIndex = deterministicPartition(arr, low, high);
+        }
+
+        quickSortHelper(arr, low, pIndex - 1, isRandomized);
+        quickSortHelper(arr, pIndex + 1, high, isRandomized);
+    }
+}
+
+// Quick Sort
+vector<int> quickSort(vector<int> arr, bool isRandomized) {
+
+    quickSortHelper(arr, 0, arr.size() - 1, isRandomized);
+
+    return arr;
+}
+
+// Display Array
+void displayArray(const vector<int>& arr) {
+
+    for (int val : arr) {
+        cout << val << " ";
+    }
+
+    cout << endl;
+}
+
+// Menu Function
+void quickSortMenu() {
+
+    int choice, n;
+    vector<int> arr;
+
+    cout << "Enter the size of the array: ";
+    cin >> n;
+
+    if (n <= 0) {
+        cout << "Invalid array size.";
+        return;
+    }
+
+    arr.resize(n);
+
+    cout << "Enter the elements of the array:\n";
+
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+
+    cout << "\nChoose Quick Sort Type:\n";
+    cout << "1. Deterministic Quick Sort\n";
+    cout << "2. Randomized Quick Sort\n";
+    cout << "Enter your choice: ";
+    cin >> choice;
+
+    cout << "\nBefore Sorting:\n";
+    displayArray(arr);
+
+    if (choice == 1) {
+
+        arr = quickSort(arr, false);
+
+        cout << "\nAfter Deterministic Quick Sort:\n";
+    }
+    else if (choice == 2) {
+
+        arr = quickSort(arr, true);
+
+        cout << "\nAfter Randomized Quick Sort:\n";
+    }
+    else {
+
+        cout << "Invalid choice.";
+        return;
+    }
+
+    displayArray(arr);
+}
+
+int main() {
+
+    srand(time(0));
+
+    quickSortMenu();
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# DAA Practical: Deterministic and Randomized Quick Sort
+
+I have corrected your program. The sorting logic is the same, but I have corrected the index checking, added input validation and kept both sorting methods in one program.
+
+## 1. Correct C++ program
+
+```
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Deterministic Partition
+int deterministicPartition(vector<int>& arr, int low, int high) {
+
+    int pivot = arr[low];
+    int i = low;
+    int j = high;
+
+    while (i < j) {
+
+        while (i <= high - 1 && arr[i] <= pivot) {
+            i++;
+        }
+
+        while (j >= low + 1 && arr[j] > pivot) {
+            j--;
+        }
+
+        if (i < j) {
+            swap(arr[i], arr[j]);
+        }
+    }
+
+    swap(arr[low], arr[j]);
+
+    return j;
+}
+
+// Randomized Partition
+int randomizedPartition(vector<int>& arr, int low, int high) {
+
+    int randomIndex = low + rand() % (high - low + 1);
+
+    swap(arr[low], arr[randomIndex]);
+
+    return deterministicPartition(arr, low, high);
+}
+
+// Quick Sort Function
+void quickSortHelper(vector<int>& arr, int low, int high,
+                     bool isRandomized) {
+
+    if (low < high) {
+
+        int pIndex;
+
+        if (isRandomized) {
+            pIndex = randomizedPartition(arr, low, high);
+        }
+        else {
+            pIndex = deterministicPartition(arr, low, high);
+        }
+
+        quickSortHelper(arr, low, pIndex - 1, isRandomized);
+        quickSortHelper(arr, pIndex + 1, high, isRandomized);
+    }
+}
+
+// Quick Sort
+vector<int> quickSort(vector<int> arr, bool isRandomized) {
+
+    quickSortHelper(arr, 0, arr.size() - 1, isRandomized);
+
+    return arr;
+}
+
+// Display Array
+void displayArray(const vector<int>& arr) {
+
+    for (int val : arr) {
+        cout << val << " ";
+    }
+
+    cout << endl;
+}
+
+// Menu Function
+void quickSortMenu() {
+
+    int choice, n;
+    vector<int> arr;
+
+    cout << "Enter the size of the array: ";
+    cin >> n;
+
+    if (n <= 0) {
+        cout << "Invalid array size.";
+        return;
+    }
+
+    arr.resize(n);
+
+    cout << "Enter the elements of the array:\n";
+
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+
+    cout << "\nChoose Quick Sort Type:\n";
+    cout << "1. Deterministic Quick Sort\n";
+    cout << "2. Randomized Quick Sort\n";
+    cout << "Enter your choice: ";
+    cin >> choice;
+
+    cout << "\nBefore Sorting:\n";
+    displayArray(arr);
+
+    if (choice == 1) {
+
+        arr = quickSort(arr, false);
+
+        cout << "\nAfter Deterministic Quick Sort:\n";
+    }
+    else if (choice == 2) {
+
+        arr = quickSort(arr, true);
+
+        cout << "\nAfter Randomized Quick Sort:\n";
+    }
+    else {
+
+        cout << "Invalid choice.";
+        return;
+    }
+
+    displayArray(arr);
+}
+
+int main() {
+
+    srand(time(0));
+
+    quickSortMenu();
+
+    return 0;
+}
+
+```
+
+## 2. Explanation of code – What and why?
+
+### A. Header files
+
+```
+#include <bits/stdc++.h>
+using namespace std;
+```
+
+- `bits/stdc++.h` includes the required C++ libraries.
+- `using namespace std` allows us to use `cin`, `cout` and `vector` directly.
+
+### B. Deterministic partition
+
+```
+int deterministicPartition(vector<int>& arr, int low, int high)
+```
+
+Why? To divide the array using a fixed pivot.
+
+```
+int pivot = arr[low];
+```
+
+Selects the first element as the pivot.
+
+```
+int i = low;
+int j = high;
+```
+
+Creates two pointers. `i` moves from left to right and `j` moves from right to left.
+
+```
+while (i < j)
+```
+
+Repeats until both pointers meet or cross.
+
+```
+while (i <= high - 1 && arr[i] <= pivot)
+    i++;
+```
+
+Moves the left pointer forward while elements are smaller than or equal to the pivot.
+
+```
+while (j >= low + 1 && arr[j] > pivot)
+    j--;
+```
+
+Moves the right pointer backward while elements are greater than the pivot.
+
+```
+if (i < j)
+    swap(arr[i], arr[j]);
+```
+
+Swaps elements that are on the wrong sides of the pivot.
+
+```
+swap(arr[low], arr[j]);
+return j;
+```
+
+Places the pivot in its correct position and returns its index.
+
+### C. Randomized partition
+
+```
+int randomizedPartition(vector<int>& arr, int low, int high)
+```
+
+Why? To select a random pivot instead of always selecting the first element.
+
+```
+int randomIndex = low + rand() % (high - low + 1);
+```
+
+Generates a random index between `low` and `high`.
+
+```
+swap(arr[low], arr[randomIndex]);
+```
+
+Moves the randomly selected element to the first position.
+
+```
+return deterministicPartition(arr, low, high);
+```
+
+Uses the same partition function to arrange elements around the new pivot.
+
+### D. Quick Sort helper
+
+```
+void quickSortHelper(vector<int>& arr, int low, int high,
+                     bool isRandomized)
+```
+
+Why? To sort the array recursively using the selected method.
+
+```
+if (low < high)
+```
+
+Checks whether at least two elements are present in the current part.
+
+```
+if (isRandomized)
+    pIndex = randomizedPartition(arr, low, high);
+else
+    pIndex = deterministicPartition(arr, low, high);
+```
+
+Selects the partition method.
+
+```
+quickSortHelper(arr, low, pIndex - 1, isRandomized);
+quickSortHelper(arr, pIndex + 1, high, isRandomized);
+```
+
+Sorts the left and right parts separately.
+
+### E. Quick Sort function
+
+```
+vector<int> quickSort(vector<int> arr, bool isRandomized)
+```
+
+Why? To start sorting and return the sorted array.
+
+```
+quickSortHelper(arr, 0, arr.size() - 1, isRandomized);
+return arr;
+```
+
+Starts sorting from the first index to the last index and returns the sorted array.
+
+### F. Display function
+
+```
+void displayArray(const vector<int>& arr)
+```
+
+Why? To display the array elements.
+
+```
+for (int val : arr)
+    cout << val << " ";
+```
+
+Prints every element one by one.
+
+### G. Menu function
+
+```
+void quickSortMenu()
+```
+
+Why? To accept input and allow the user to select the sorting method.
+
+```
+cin >> n;
+arr.resize(n);
+```
+
+Accepts the array size and creates space for its elements.
+
+```
+for (int i = 0; i < n; i++)
+    cin >> arr[i];
+```
+
+Accepts array elements.
+
+```
+if (choice == 1)
+```
+
+Selects deterministic Quick Sort.
+
+```
+else if (choice == 2)
+```
+
+Selects randomized Quick Sort.
+
+```
+displayArray(arr);
+```
+
+Displays the sorted array.
+
+### H. Main function
+
+```
+int main() {
+    srand(time(0));
+    quickSortMenu();
+    return 0;
+}
+```
+
+- `srand(time(0))` initializes the random number generator.
+- `quickSortMenu()` starts the program.
+- `return 0` ends the program.
+
+## 3. Sample output
+
+Input:
+
+```
+Enter the size of the array: 5
+Enter the elements of the array:
+40 10 30 50 20
+
+Choose Quick Sort Type:
+1. Deterministic Quick Sort
+2. Randomized Quick Sort
+Enter your choice: 1
+```
+
+Output:
+
+```
+Before Sorting:
+40 10 30 50 20
+
+After Deterministic Quick Sort:
+10 20 30 40 50
+```
+
+If you select option 2, the output will also be:
+
+```
+After Randomized Quick Sort:
+10 20 30 40 50
+```
+
+## 4. Difference between both methods
+
+| Deterministic Quick Sort                     | Randomized Quick Sort                             |
+| -------------------------------------------- | ------------------------------------------------- |
+| Selects the first element as pivot.          | Selects a random element as pivot.                |
+| Uses a fixed selection rule.                 | Uses random selection.                            |
+| Can give poor performance on certain inputs. | Reduces the chance of repeatedly poor partitions. |
+| Average: O(n log n)                          | Expected: O(n log n)                              |
+
+## 5. Viva questions and answers
+
+Q1. What is Quick Sort?
+
+Quick Sort is a sorting algorithm that uses the Divide and Conquer technique.
+
+Q2. What is a pivot?
+
+A pivot is an element used to divide the array into two parts.
+
+Q3. What is deterministic Quick Sort?
+
+It selects the pivot using a fixed rule. In our program, it selects the first element.
+
+Q4. What is randomized Quick Sort?
+
+It selects the pivot randomly from the array.
+
+Q5. Why do we use randomization?
+
+To reduce the chance of getting unbalanced partitions repeatedly.
+
+Q6. What is partitioning?
+
+It is the process of arranging smaller elements before the pivot and larger elements after it.
+
+Q7. What is recursion?
+
+A function calling itself is called recursion.
+
+Q8. Why do we use swap()?
+
+To exchange two elements.
+
+Q9. Why do we use rand()?
+
+To generate a random number.
+
+Q10. Why do we use srand(time(0))?
+
+To initialize random number generation using the current time.
+
+Q11. What is the average time complexity?
+
+O(n log n).
+
+Q12. What is the worst-case time complexity?
+
+O(n²).
+
+Q13. What is the space complexity?
+
+O(log n) on average for the recursion stack, and O(n) in the worst case.
+
+## 6. Most important points to remember
+
+Deterministic Quick Sort
+
+First element = Pivot.
+
+Randomized Quick Sort
+
+Random element = Pivot.
+
+Partition
+
+Arranges elements around the pivot.
+
+Recursion
+
+Sorts the left and right parts.
+
+Swap
+
+Exchanges elements.
+
+One-line explanation for your external:
+
+"My program implements Quick Sort using deterministic and randomized pivot selection. Deterministic Quick Sort selects the first element as pivot, whereas randomized Quick Sort selects a random pivot. Both methods divide the array into smaller parts using partitioning and sort them recursively."

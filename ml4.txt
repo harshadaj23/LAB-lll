@@ -1,0 +1,379 @@
+## Explanation of KNN Diabetes Prediction Program
+
+1\. Importing Libraries
+
+```
+import pandas as pdimport numpy as npfrom sklearn.model_selection import train_test_splitfrom sklearn.preprocessing import StandardScalerfrom sklearn.neighbors import KNeighborsClassifierfrom sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score
+```
+
+- `pandas`: Used to load and handle the dataset.
+- `numpy`: Used for numerical operations.
+- `train_test_split`: Divides data into training and testing sets.
+- `StandardScaler`: Brings feature values to a similar scale.
+- `KNeighborsClassifier`: Implements the KNN algorithm.
+- `confusion_matrix`: Shows correct and incorrect predictions.
+- `accuracy_score`: Calculates the accuracy of the model.
+- `precision_score`: Calculates the precision.
+- `recall_score`: Calculates the recall.
+
+2\. Load the Dataset
+
+```
+df = pd.read_csv("diabetes.csv")print(df.head())
+```
+
+This code loads the diabetes dataset from a CSV file. The `head()` function displays the first five rows of the dataset.
+
+3\. Separate Features and Target
+
+```
+X = df.drop("Outcome", axis=1)y = df["Outcome"]
+```
+
+Here, `X` contains the input features such as glucose, age, BMI and blood pressure. The `y` variable contains the target column `Outcome`, which indicates whether the person has diabetes or not. Usually, 0 means No Diabetes and 1 means Diabetes.
+
+4\. Split the Dataset
+
+```
+X_train, X_test, y_train, y_test = train_test_split(    X, y, test_size=0.2, random_state=42)
+```
+
+This code divides the dataset into two parts: 80% for training and 20% for testing. The model learns from training data and is evaluated using testing data. `random_state=42` helps produce a reproducible split.
+
+5\. Feature Scaling
+
+```
+scaler = StandardScaler()X_train = scaler.fit_transform(X_train)X_test = scaler.transform(X_test)
+```
+
+Feature scaling brings all input values to a similar scale. It is important in KNN because KNN calculates the distance between data points. The scaler learns from training data and applies the same scaling to testing data.
+
+6\. Create and Train KNN Model
+
+```
+knn = KNeighborsClassifier(n_neighbors=5)knn.fit(X_train, y_train)
+```
+
+This code creates a KNN model with `k=5`. It means the model considers the five nearest data points to classify a new person. The `fit()` function trains the model using training data.
+
+Class AClass BPredictionClass A
+
+k = 5: Class A wins 3–2; the point is Class A.
+
+\\(k\\)
+
+Give feedback
+
+7\. Make Predictions
+
+```
+y_pred = knn.predict(X_test)
+```
+
+The `predict()` function uses the trained model to predict whether each person in the testing dataset has diabetes or not.
+
+8\. Calculate Confusion Matrix
+
+```
+cm = confusion_matrix(y_test, y_pred)
+```
+
+The confusion matrix compares actual results with predicted results. It shows the number of correct and incorrect predictions made by the model.
+
+9\. Calculate Accuracy
+
+```
+accuracy = accuracy_score(y_test, y_pred)
+```
+
+Accuracy tells us how many predictions are correct out of all predictions made by the model.
+
+10\. Calculate Error Rate
+
+```
+error_rate = 1 - accuracy
+```
+
+Error rate tells us the percentage of incorrect predictions made by the model.
+
+11\. Calculate Precision
+
+```
+precision = precision_score(y_test, y_pred)
+```
+
+Precision tells us how many patients predicted as diabetic are actually diabetic.
+
+12\. Calculate Recall
+
+```
+recall = recall_score(y_test, y_pred)
+```
+
+Recall tells us how many actual diabetic patients were correctly identified by the model.
+
+13\. Display Results
+
+```
+print("Confusion Matrix:\n", cm)print("Accuracy:", round(accuracy, 4))print("Error Rate:", round(error_rate, 4))print("Precision:", round(precision, 4))print("Recall:", round(recall, 4))
+```
+
+This code displays the confusion matrix, accuracy, error rate, precision and recall. The `round(value, 4)` function displays the values up to four decimal places.
+
+## Conclusion
+
+The KNN algorithm is successfully implemented on the diabetes dataset. The model predicts whether a person has diabetes or not using the nearest five data points. Its performance is evaluated using the confusion matrix, accuracy, error rate, precision and recall.
+
+
+
+
+
+
+
+## KNN Diabetes Prediction – Viva Questions and Answers
+
+These are important viva questions for your SPPU ML practical. Answers are in simple English so you can easily remember them.
+
+### Basic Questions
+
+1\. What is KNN?
+
+KNN stands for K-Nearest Neighbors. It is a supervised machine learning algorithm used for classification and regression.
+
+2\. What is the aim of this practical?
+
+The aim is to implement the KNN algorithm on the diabetes dataset and predict whether a person has diabetes or not.
+
+3\. What is supervised learning?
+
+Supervised learning is a type of machine learning in which the model learns from labelled data.
+
+4\. What is classification?
+
+Classification is the process of predicting a category or class, such as Yes/No or 0/1.
+
+5\. Why is KNN called a lazy learning algorithm?
+
+Because KNN does not build a separate model during training. It stores the training data and performs calculations when a prediction is required.
+
+6\. What is the meaning of K in KNN?
+
+K represents the number of nearest neighbours considered to make a prediction.
+
+7\. Why have you selected K = 5?
+
+I selected K = 5, so the algorithm considers the five nearest data points to predict the result.
+
+8\. How does KNN work?
+
+KNN calculates the distance between a new data point and existing data points. It selects the K nearest points and predicts the class based on majority voting.
+
+Class AClass BPredictionClass A
+
+k = 5: Class A wins 3–2; the point is Class A.
+
+\\(k\\)
+
+Give feedback
+
+### Dataset and Preprocessing Questions
+
+9\. Which dataset is used in this practical?
+
+We have used the `diabetes.csv` dataset.
+
+10\. What is the target column?
+
+The target column is `Outcome`.
+
+11\. What does Outcome 0 and 1 mean?
+
+- 0 – Person does not have diabetes.
+- 1 – Person has diabetes.
+
+12\. What is the difference between features and target?
+
+Features are input columns used for prediction, while the target is the output we want to predict.
+
+13\. Why do we split the dataset?
+
+We split the dataset to train the model on one part and test its performance on unseen data.
+
+14\. What is the meaning of 80:20 ratio?
+
+80% of the data is used for training and 20% is used for testing.
+
+15\. What is StandardScaler?
+
+StandardScaler is a technique used to bring numerical features to a similar scale.
+
+16\. Why is feature scaling important in KNN?
+
+KNN uses distance calculations. Scaling prevents features with larger values from dominating the distance calculation.
+
+### Evaluation Questions
+
+17\. What is a confusion matrix?
+
+A confusion matrix is a table that compares actual values with predicted values. It shows correct and incorrect predictions.
+
+18\. What is accuracy?
+
+Accuracy tells us how many predictions are correct out of the total predictions.
+
+19\. What is error rate?
+
+Error rate tells us how many predictions are incorrect.
+
+20\. What is precision?
+
+Precision tells us how many patients predicted as diabetic are actually diabetic.
+
+21\. What is recall?
+
+Recall tells us how many actual diabetic patients are correctly identified by the model.
+
+22\. What is the difference between accuracy and precision?
+
+Accuracy measures all correct predictions, while precision measures how many positive predictions are actually correct.
+
+### Python Code Questions
+
+23\. What is Pandas?
+
+Pandas is a Python library used to read, handle and analyse data.
+
+24\. What is `train_test_split()`?
+
+It is a function used to divide the dataset into training and testing parts.
+
+25\. What is `fit()`?
+
+The `fit()` function trains the KNN model using training data.
+
+26\. What is `predict()`?
+
+The `predict()` function predicts the output for new or testing data.
+
+27\. What is `n_neighbors=5`?
+
+It specifies that the algorithm will consider five nearest neighbours.
+
+28\. What is `random_state=42`?
+
+It ensures that the dataset is split in the same way whenever the code is executed with the same data and settings.
+
+29\. Why do we use `round(accuracy, 4)`?
+
+It displays the accuracy value up to four decimal places.
+
+### Important External Viva Questions
+
+30\. What is Euclidean distance?
+
+Euclidean distance is the straight-line distance between two data points. KNN commonly uses it to find the nearest neighbours.
+
+31\. What happens if the value of K is too small?
+
+The model may become sensitive to noise and incorrect data points.
+
+32\. What happens if the value of K is too large?
+
+The model may consider too many neighbours and give less accurate predictions.
+
+33\. Is KNN supervised or unsupervised?
+
+KNN is a supervised learning algorithm.
+
+34\. What are the advantages of KNN?
+
+- Easy to understand and implement.
+- Simple algorithm.
+- Useful for classification problems.
+
+35\. What are the disadvantages of KNN?
+
+- Prediction can be slow for large datasets.
+- Requires feature scaling.
+- Performance depends on the value of K.
+
+## Most important questions to prepare first
+
+High priority
+
+1. What is KNN?
+2. How does KNN work?
+3. Why do we use K = 5?
+4. Why is StandardScaler used?
+5. What is a confusion matrix?
+6. What are accuracy, precision and recall?
+7. What is the difference between training and testing data?
+8. What does the Outcome column represent?
+
+Viva tip: If the examiner asks, "Explain your practical in short," you can say:
+
+"I implemented the KNN algorithm using the diabetes dataset. First, I loaded and divided the dataset into training and testing data. Then I applied feature scaling and trained the KNN model with five neighbours. Finally, I predicted the results and evaluated the model using confusion matrix, accuracy, error rate, precision and recall."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score
+
+# Load dataset (make sure diabetes.csv is in the working directory)
+df = pd.read_csv("diabetes.csv")
+print(df.head())
+
+# Features and target
+X = df.drop("Outcome", axis=1)
+y = df["Outcome"]
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Feature scaling (important for KNN)
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# KNN model (you can tune n_neighbors for better accuracy)
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+
+# Predictions
+y_pred = knn.predict(X_test)
+
+# Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+
+# Accuracy
+accuracy = accuracy_score(y_test, y_pred)
+
+# Error Rate
+error_rate = 1 - accuracy
+
+# Precision
+precision = precision_score(y_test, y_pred)
+
+# Recall
+recall = recall_score(y_test, y_pred)
+
+print("Confusion Matrix:\n", cm)
+print("Accuracy:", round(accuracy, 4))
+print("Error Rate:", round(error_rate, 4))
+print("Precision:", round(precision, 4))
+print("Recall:", round(recall, 4))

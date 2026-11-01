@@ -1,0 +1,474 @@
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Node class
+class Node {
+public:
+    char data;
+    long long freq;
+    Node *left, *right;
+
+    Node(char data, long long freq) {
+        this->data = data;
+        this->freq = freq;
+        left = right = nullptr;
+    }
+};
+
+// Comparator for Min Heap
+class Compare {
+public:
+    bool operator()(Node* l, Node* r) {
+        if (l->freq == r->freq)
+            return l->data > r->data;
+
+        return l->freq > r->freq;
+    }
+};
+
+// Huffman Coding class
+class HuffmanCoding {
+private:
+    Node* root = nullptr;
+    map<char, string> codes;
+
+    // Generate Huffman codes
+    void generateCodes(Node* root, string str) {
+        if (!root)
+            return;
+
+        // Leaf node
+        if (!root->left && !root->right) {
+            codes[root->data] = str.empty() ? "0" : str;
+            return;
+        }
+
+        generateCodes(root->left, str + "0");
+        generateCodes(root->right, str + "1");
+    }
+
+public:
+
+    // Build Huffman Tree
+    void buildTree() {
+        priority_queue<Node*, vector<Node*>, Compare> minHeap;
+
+        int n;
+        cout << "Enter number of characters: ";
+        cin >> n;
+
+        if (n <= 0) {
+            cout << "Invalid number of characters!\n";
+            return;
+        }
+
+        for (int i = 0; i < n; i++) {
+            char ch;
+            long long freq;
+
+            cout << "Enter character and frequency: ";
+            cin >> ch >> freq;
+
+            if (freq <= 0) {
+                cout << "Frequency must be positive!\n";
+                return;
+            }
+
+            minHeap.push(new Node(ch, freq));
+        }
+
+        // Construct Huffman Tree
+        while (minHeap.size() > 1) {
+            Node* left = minHeap.top();
+            minHeap.pop();
+
+            Node* right = minHeap.top();
+            minHeap.pop();
+
+            Node* parent = new Node(
+                '$', left->freq + right->freq
+            );
+
+            parent->left = left;
+            parent->right = right;
+
+            minHeap.push(parent);
+        }
+
+        root = minHeap.top();
+
+        codes.clear();
+        generateCodes(root, "");
+
+        cout << "Huffman Tree built successfully!\n";
+    }
+
+    // Display Huffman Codes
+    void displayCodes() {
+        if (!root) {
+            cout << "Build the Huffman Tree first!\n";
+            return;
+        }
+
+        cout << "\nHuffman Codes:\n";
+
+        for (auto p : codes) {
+            cout << p.first << " : " << p.second << endl;
+        }
+    }
+
+    // Encode text
+    string encode(string text) {
+        if (!root)
+            return "Error: Build the tree first!";
+
+        string encoded = "";
+
+        for (char c : text) {
+            if (codes.find(c) == codes.end())
+                return "Error: Character not found in tree!";
+
+            encoded += codes[c];
+        }
+
+        return encoded;
+    }
+
+    // Decode binary string
+    string decode(string encoded) {
+        if (!root)
+            return "Error: Build the tree first!";
+
+        string decoded = "";
+        Node* current = root;
+
+        if (!root->left && !root->right) {
+            for (char bit : encoded) {
+                if (bit != '0')
+                    return "Error: Invalid binary code!";
+                decoded += root->data;
+            }
+            return decoded;
+        }
+
+        for (char bit : encoded) {
+            if (bit == '0')
+                current = current->left;
+            else if (bit == '1')
+                current = current->right;
+            else
+                return "Error: Enter only 0 and 1!";
+
+            if (!current)
+                return "Error: Invalid binary code!";
+
+            if (!current->left && !current->right) {
+                decoded += current->data;
+                current = root;
+            }
+        }
+
+        if (current != root)
+            return "Error: Incomplete binary code!";
+
+        return decoded;
+    }
+};
+
+// Main function
+int main() {
+    HuffmanCoding huffman;
+    int choice;
+
+    while (true) {
+        cout << "\n----- HUFFMAN CODING MENU -----\n";
+        cout << "1. Build Huffman Tree\n";
+        cout << "2. Display Codes\n";
+        cout << "3. Encode Text\n";
+        cout << "4. Decode Text\n";
+        cout << "5. Exit\n";
+
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+
+            case 1:
+                huffman.buildTree();
+                break;
+
+            case 2:
+                huffman.displayCodes();
+                break;
+
+            case 3: {
+                string text;
+                cout << "Enter text to encode: ";
+                cin >> text;
+
+                cout << "Encoded: "
+                     << huffman.encode(text) << endl;
+                break;
+            }
+
+            case 4: {
+                string encoded;
+                cout << "Enter binary string to decode: ";
+                cin >> encoded;
+
+                cout << "Decoded: "
+                     << huffman.decode(encoded) << endl;
+                break;
+            }
+
+            case 5:
+                cout << "Exiting program...\n";
+                return 0;
+
+            default:
+                cout << "Invalid choice!\n";
+        }
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Enter number of characters: 6
+
+Enter characters and their frequencies:
+a 5
+b 9
+c 12
+d 13
+e 16
+f 45
+
+Huffman Codes:
+
+Character    Frequency    Code
+a            5            1100
+b            9            1101
+c            12           100
+d            13           101
+e            16           111
+f            45           0
+
+Huffman Encoding Completed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Sir/Mam, I have implemented Huffman Encoding using a Greedy Algorithm in C++.
+
+First, I take characters and their frequencies from the user. Then I insert all characters into a Min Priority Queue.
+
+After that, I repeatedly remove the two nodes having minimum frequencies and combine them into a new parent node.
+
+I repeat this process until only one node remains. This creates the Huffman Tree.
+
+Then I traverse the tree. I assign 0 to the left branch and 1 to the right branch to generate binary codes.
+
+Finally, my program can display the Huffman codes, encode the given text and decode the binary string."
+
+
+
+# Huffman Encoding – Simple Program Explanation
+
+Aim: To implement Huffman Encoding using a Greedy Strategy.
+
+### 1. What is Huffman Encoding?
+
+Huffman Encoding is a data compression technique.
+
+- Characters used more frequently get shorter binary codes.
+- Characters used less frequently get longer binary codes.
+- It helps reduce the size of data.
+
+### 2. Explanation of the Program
+
+1\. Header file
+
+```
+#include <bits/stdc++.h>
+```
+
+It includes all standard C++ libraries.
+
+2\. Node class
+
+It stores:
+
+- `data` – character
+- `freq` – frequency of character
+- `left` and `right` – child nodes of the tree.
+
+3\. Compare class
+
+It compares the frequencies of nodes and helps create a Min Priority Queue, where the smallest frequency comes first.
+
+4\. HuffmanCoding class
+
+It contains:
+
+- `root` – root of the Huffman tree.
+- `codes` – stores the binary code of each character.
+
+5\. generateCodes()
+
+This function generates binary codes.
+
+- Moving left adds `0`.
+- Moving right adds `1`.
+- When a leaf node is reached, its code is stored.
+
+6\. buildTree()
+
+This is the main function.
+
+1. Accept characters and their frequencies.
+2. Insert all nodes into the priority queue.
+3. Remove the two nodes with the smallest frequencies.
+4. Combine them into a new parent node.
+5. Insert the parent node back into the queue.
+6. Repeat until only one node remains.
+
+That node becomes the root of the Huffman tree.
+
+7\. displayCodes()
+
+Displays each character and its generated binary code.
+
+8\. encode()
+
+Converts normal text into binary Huffman codes.
+
+9\. decode()
+
+Converts binary codes back into the original text using the Huffman tree.
+
+10\. main()
+
+Displays the menu and allows the user to:
+
+1. Build Huffman Tree
+2. Display Codes
+3. Encode Text
+4. Decode Text
+5. Exit
+
+### 3. Example
+
+Suppose the input is:
+
+| Character | Frequency |
+| --------- | --------- |
+| A         | 5         |
+| B         | 9         |
+| C         | 12        |
+| D         | 13        |
+| E         | 16        |
+
+Possible Huffman codes:
+
+| Character | Code |
+| --------- | ---- |
+| A         | 100  |
+| B         | 101  |
+| C         | 00   |
+| D         | 01   |
+| E         | 11   |
+
+If the input text is `ABC`, its encoded output is:
+
+`10010100`
+
+### 4. Time Complexity
+
+- Building Huffman Tree: O(n log n)
+- Generating Codes: O(n)
+- Encoding using map: O(m log n), where m is the text length.
+- Decoding: O(m), where m is the number of bits.
+
+### 5. Viva Questions
+
+Q1. What is Huffman Encoding?
+
+It is a lossless data compression technique.
+
+Q2. Which strategy is used?
+
+Greedy Strategy.
+
+Q3. Which data structure is used?
+
+Min Priority Queue.
+
+Q4. Why do we use 0 and 1?
+
+To represent left and right movements in the Huffman Tree.
+
+Q5. What is a greedy approach?
+
+It selects the best available choice at each step.
+
+Q6. What is the main advantage?
+
+It reduces the number of bits required to store data.
+
+### 6. Conclusion
+
+Thus, we successfully implemented Huffman Encoding using a Greedy Strategy to compress and decompress text.
+
+
+
+1. What is Huffman Encoding?
+   It is a lossless data compression technique.
+2. Which algorithm strategy is used?
+   Greedy Strategy.
+3. Why do we use Min Priority Queue?
+   To select the two nodes having minimum frequencies efficiently.
+4. What is a leaf node?
+   A node that does not have any child nodes.
+5. Why do we assign 0 and 1?
+   To generate binary codes by traversing the left and right branches.
+6. What is the time complexity?
+   O(n log n) for building the Huffman Tree.
+7. What is the advantage of Huffman Encoding?
+   It reduces the number of bits required to store data.
+8. What is lossless compression?
+   Compression in which the original data can be recovered without losing information.

@@ -1,0 +1,359 @@
+# -------------------------
+# Import libraries
+# -------------------------
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
+
+# -------------------------
+# 1. Load Dataset with correct encoding
+# -------------------------
+df = pd.read_csv("sales_data_sample.csv", encoding='latin1')  # UnicodeDecodeError fix
+print("Dataset loaded successfully!")
+print(df.head())
+
+
+
+# 2. Select numeric columns for clustering
+numeric_cols = df.select_dtypes(include=['int64', 'float64']).columns
+X = df[numeric_cols]
+
+
+# 3. Standardize the data
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+
+
+
+# 4. Elbow Method to determine optimal K for K-Means
+wcss = []
+for i in range(1, 11):
+    kmeans = KMeans(n_clusters=i, random_state=42)
+    kmeans.fit(X_scaled)
+    wcss.append(kmeans.inertia_)
+
+plt.figure(figsize=(8,5))
+plt.plot(range(1, 11), wcss, marker='o')
+plt.title('Elbow Method')
+plt.xlabel('Number of clusters')
+plt.ylabel('WCSS')
+plt.show()
+
+
+
+
+
+# 5. K-Means Clustering
+# -------------------------
+k = 4  # choose based on elbow plot
+kmeans = KMeans(n_clusters=k, random_state=42)
+df['KMeans_Cluster'] = kmeans.fit_predict(X_scaled)
+print("\nK-Means Clustering result:")
+print(df.head())
+
+
+
+
+
+
+# 6. Hierarchical Clustering
+linked = linkage(X_scaled, method='ward')
+
+plt.figure(figsize=(10, 7))
+dendrogram(linked, orientation='top', distance_sort='descending', show_leaf_counts=True)
+plt.title('Hierarchical Clustering Dendrogram')
+plt.show()
+
+# Assign clusters (cut dendrogram at k clusters)
+df['Hier_Cluster'] = fcluster(linked, k, criterion='maxclust')
+print("\nHierarchical Clustering result:")
+print(df.head())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+I checked your uploaded `ml5.ipynb` notebook. It implements two clustering algorithms: K-Means Clustering and Hierarchical Clustering using the `sales_data_sample.csv` dataset.
+
+## 1. Aim of the practical
+
+To implement K-Means and Hierarchical Clustering algorithms on a sales dataset to group similar sales records into clusters.
+
+## 2. Explanation of each code cell
+
+Cell 1: Import libraries and load dataset
+
+```
+import pandas as pdimport matplotlib.pyplot as pltfrom sklearn.preprocessing import StandardScalerfrom sklearn.cluster import KMeansfrom scipy.cluster.hierarchy import dendrogram, linkage, fcluster
+```
+
+This code imports the required libraries. Pandas is used to handle data, Matplotlib is used to create graphs, StandardScaler is used for data scaling, and KMeans and SciPy functions are used for clustering. The dataset is loaded using `pd.read_csv()`. The `latin1` encoding helps read special characters in the CSV file.
+
+Cell 2: Select numerical columns
+
+```
+numeric_cols = df.select_dtypes(include=['int64', 'float64']).columnsX = df[numeric_cols]
+```
+
+This code selects only numerical columns from the dataset. These columns are stored in `X` and used as input for clustering algorithms.
+
+Cell 3: Standardize the data
+
+```
+scaler = StandardScaler()X_scaled = scaler.fit_transform(X)
+```
+
+StandardScaler brings numerical values to a similar scale. It is important because features with large values can affect the clustering results more than features with small values.
+
+Cell 4: Elbow Method
+
+```
+wcss = []for i in range(1, 11):    kmeans = KMeans(n_clusters=i, random_state=42)    kmeans.fit(X_scaled)    wcss.append(kmeans.inertia_)
+```
+
+The Elbow Method is used to find a suitable number of clusters. It calculates WCSS (Within-Cluster Sum of Squares) for different values of K. The graph plots the number of clusters against WCSS. We select K near the point where the graph starts bending like an elbow.
+
+Graph explanation: The Elbow graph helps us decide how many clusters should be created. As the number of clusters increases, WCSS decreases.
+
+Cell 5: K-Means Clustering
+
+```
+k = 4kmeans = KMeans(n_clusters=k, random_state=42)df['KMeans_Cluster'] = kmeans.fit_predict(X_scaled)
+```
+
+This code creates four clusters using the K-Means algorithm. The `fit_predict()` function groups similar records and assigns a cluster number to each record. The result is stored in a new column called `KMeans_Cluster`.
+
+Cell 6: Hierarchical Clustering
+
+```
+linked = linkage(X_scaled, method='ward')
+```
+
+This code performs hierarchical clustering using the Ward method. It groups similar data points by gradually combining smaller clusters into larger clusters.
+
+```
+dendrogram(linked, orientation='top',           distance_sort='descending',           show_leaf_counts=True)
+```
+
+This code creates a dendrogram, which is a tree-like graph showing how data points and clusters are joined together.
+
+Graph explanation: A dendrogram shows how individual data points are combined into larger clusters. By cutting the tree at a suitable height, we can decide the number of clusters.
+
+```
+df['Hier_Cluster'] = fcluster(linked, k, criterion='maxclust')
+```
+
+This code divides the data into a maximum of four clusters and stores the cluster numbers in a new column called `Hier_Cluster`.
+
+## 3. Important difference between the two algorithms
+
+| K-Means Clustering                          | Hierarchical Clustering                            |
+| ------------------------------------------- | -------------------------------------------------- |
+| Divides data into K clusters.               | Creates a tree-like structure of clusters.         |
+| Requires the number of clusters in advance. | Does not require the number of clusters initially. |
+| Uses cluster centres.                       | Uses distances between data points or clusters.    |
+| Uses the Elbow Method to help select K.     | Uses a dendrogram to understand cluster formation. |
+
+## 4. Conclusion
+
+K-Means and Hierarchical Clustering algorithms are successfully implemented on the sales dataset. The Elbow Method is used to select four clusters for K-Means, while the dendrogram represents the hierarchical grouping of data. Both algorithms help group similar sales records.
+
+Important note: Your notebook selects all numerical columns, including `ORDERNUMBER` and `ORDERLINENUMBER`. These are identifiers or order-related values, so they may influence the clustering results. Also, the exact best value of K should be confirmed by examining your Elbow graph.
+
+I can also prepare viva questions and answers for this practical.
+
+
+
+
+
+
+
+
+
+## ML Practical – K-Means and Hierarchical Clustering Viva Questions
+
+These questions are based on your `ml5.ipynb` practical. Answers are in simple English for easy preparation.
+
+### Basic Questions
+
+1\. What is clustering?
+
+Clustering is an unsupervised machine learning technique used to group similar data points together.
+
+2\. What is unsupervised learning?
+
+Unsupervised learning is a type of machine learning in which the model learns from data without predefined labels.
+
+3\. Which algorithms are used in your practical?
+
+K-Means Clustering and Hierarchical Clustering.
+
+4\. Which dataset is used?
+
+The `sales_data_sample.csv` dataset.
+
+5\. What is the aim of this practical?
+
+To group similar sales records into clusters using K-Means and Hierarchical Clustering algorithms.
+
+### K-Means Clustering
+
+6\. What is K-Means clustering?
+
+K-Means is an unsupervised learning algorithm that divides data into K groups based on similarity.
+
+7\. What does K represent?
+
+K represents the number of clusters we want to create.
+
+8\. How does K-Means work?
+
+First, it selects K cluster centres. Then it assigns each data point to the nearest centre and updates the centres. This process continues until the clusters become stable.
+
+9\. What is a centroid?
+
+A centroid is the centre point of a cluster.
+
+10\. Why is K-Means used?
+
+It is used to group similar data points and find patterns in data.
+
+11\. What is the Elbow Method?
+
+The Elbow Method helps us select the suitable number of clusters by plotting WCSS against different K values.
+
+12\. What is WCSS?
+
+WCSS stands for Within-Cluster Sum of Squares. It measures how close data points are to their cluster centres.
+
+13\. Why does WCSS decrease when K increases?
+
+Because more clusters allow data points to be closer to their respective cluster centres.
+
+14\. What is `random_state=42`?
+
+It helps produce repeatable results when the code is executed again.
+
+### Hierarchical Clustering
+
+15\. What is Hierarchical Clustering?
+
+It is an unsupervised learning algorithm that creates clusters in a tree-like structure.
+
+16\. What is a dendrogram?
+
+A dendrogram is a tree-like graph that shows how data points or clusters are joined together.
+
+17\. What are the types of Hierarchical Clustering?
+
+There are two types:
+
+- Agglomerative – Bottom-up approach.
+- Divisive – Top-down approach.
+
+18\. Which type is used in your practical?
+
+Your code uses the `linkage()` function to perform agglomerative hierarchical clustering.
+
+19\. What is the Ward method?
+
+Ward's method combines clusters in a way that minimizes the increase in within-cluster variation.
+
+20\. What is the use of `fcluster()`?
+
+It creates cluster labels from the hierarchical clustering results.
+
+### Data Preprocessing
+
+21\. What is StandardScaler?
+
+StandardScaler is used to bring numerical features to a similar scale.
+
+22\. Why is scaling important in clustering?
+
+Clustering uses distance calculations. Scaling prevents features with larger values from dominating the results.
+
+23\. What is Pandas?
+
+Pandas is a Python library used to load and analyse datasets.
+
+24\. What is Matplotlib?
+
+Matplotlib is a Python library used to create graphs and visualizations.
+
+25\. What does `select_dtypes()` do?
+
+It selects columns based on their data types, such as integer and float columns.
+
+### Difference and Advantages
+
+26\. What is the difference between K-Means and Hierarchical Clustering?
+
+| K-Means                | Hierarchical                                                  |
+| ---------------------- | ------------------------------------------------------------- |
+| Creates K clusters.    | Creates a hierarchy of clusters.                              |
+| Uses centroids.        | Uses distances between clusters.                              |
+| Uses the Elbow Method. | Uses a dendrogram.                                            |
+| Requires K in advance. | Number of clusters can be selected by cutting the dendrogram. |
+
+27\. What are the advantages of K-Means?
+
+- Easy to understand.
+- Simple to implement.
+- Works well for many clustering problems.
+
+28\. What are the disadvantages of K-Means?
+
+- We must select K.
+- Sensitive to outliers.
+- Results can depend on initial centroids.
+
+29\. What are the advantages of Hierarchical Clustering?
+
+- Shows clusters in a tree structure.
+- Helps understand relationships between clusters.
+- Does not require the final number of clusters at the beginning.
+
+30\. What are the disadvantages of Hierarchical Clustering?
+
+- Can be slow for large datasets.
+- Sensitive to noise and outliers.
+- Once clusters are joined, they are not separated again in agglomerative clustering.
+
+## Most important questions for external viva
+
+Prepare these first
+
+1. What is clustering?
+2. What is unsupervised learning?
+3. What is K-Means?
+4. What is the meaning of K?
+5. What is a centroid?
+6. What is the Elbow Method?
+7. What is WCSS?
+8. What is a dendrogram?
+9. What is Ward's method?
+10. Difference between K-Means and Hierarchical Clustering.
+11. Why is StandardScaler used?
+12. What is the difference between agglomerative and divisive clustering?
+
+## Short practical explanation for external
+
+"I used the sales dataset to implement K-Means and Hierarchical Clustering. First, I loaded the dataset and selected numerical columns. Then I applied StandardScaler to scale the data. I used the Elbow Method to select the number of clusters and applied K-Means. After that, I performed Hierarchical Clustering and plotted a dendrogram to understand how the data was grouped."
+
+Viva tip: Remember these three points: K-Means uses centroids, the Elbow Method helps select K, and Hierarchical Clustering uses a dendrogram.

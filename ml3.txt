@@ -1,0 +1,554 @@
+I checked your uploaded `ml3.ipynb` notebook. It is the correct practical for:
+
+“Given a bank customer, build a neural network-based classifier that can determine whether they will leave or not.”
+
+Your notebook uses a Neural Network (ANN) to predict bank customer churn.
+
+I'll explain your actual notebook in simple language, including what each code cell does, why it is used, the output, and viva questions.
+
+# 1. Aim of the practical
+
+To build a neural network model that predicts whether a bank customer will leave the bank or continue using its services.
+
+- `0` = Customer will stay.
+- `1` = Customer will leave (churn).
+
+# 2. Dataset
+
+Your notebook uses `Churn_Modelling.csv`.
+
+It contains 10,000 customer records and 14 original columns. After removing three unnecessary columns, 11 columns remain.
+
+| Column          | Meaning                            |
+| --------------- | ---------------------------------- |
+| CreditScore     | Customer's credit score            |
+| Geography       | Customer's country                 |
+| Gender          | Male or Female                     |
+| Age             | Customer's age                     |
+| Tenure          | Years with the bank                |
+| Balance         | Bank account balance               |
+| NumOfProducts   | Number of bank products            |
+| HasCrCard       | Whether customer has a credit card |
+| IsActiveMember  | Whether customer is active         |
+| EstimatedSalary | Customer's estimated salary        |
+| Exited          | Whether customer left the bank     |
+
+The target column is `Exited`.
+
+# 3. Explanation of your code
+
+## Cell 0: Importing libraries
+
+```
+import pandas as pdimport numpy as npimport matplotlib.pyplot as pltimport seaborn as snsfrom sklearn.preprocessing import StandardScalerimport io
+```
+
+| Code           | Use                                          |
+| -------------- | -------------------------------------------- |
+| pandas         | To read and handle dataset                   |
+| numpy          | To perform numerical calculations            |
+| matplotlib     | To create graphs                             |
+| seaborn        | To create statistical graphs                 |
+| StandardScaler | To bring numerical values to a similar scale |
+| io             | To handle input/output operations            |
+
+Why? These libraries help us load, process, understand and prepare the data.
+
+## Cell 1: Loading the dataset
+
+```
+df = pd.read_csv("Churn_Modelling.csv")df.head(10)
+```
+
+- `read_csv()` reads the CSV file.
+- `df` stores the dataset.
+- `head(10)` displays the first 10 records.
+
+Why? To check what information is available in the dataset.
+
+## Cell 2: Removing unnecessary columns
+
+```
+df = df.drop(['RowNumber','CustomerId','Surname'], axis=1)df.head()
+```
+
+- `RowNumber` is only a row number.
+- `CustomerId` is only a customer identification number.
+- `Surname` is the customer's last name.
+- `axis=1` means remove columns.
+
+Why? These columns are not useful for predicting whether a customer will leave.
+
+## Cell 3: Checking missing values
+
+```
+df.isna().any()df.isna().sum()
+```
+
+- `isna()` checks missing values.
+- `any()` checks whether a column has any missing value.
+- `sum()` counts the missing values.
+
+Your output: All columns have 0 missing values.
+
+Why? Missing values can affect model training.
+
+## Cell 4: Checking dataset information
+
+```
+print(df.shape)df.info()
+```
+
+- `shape` displays rows and columns.
+- `info()` displays column names and data types.
+
+Your output:
+
+- Rows = 10,000
+- Columns = 11
+
+Why? To understand the size and structure of the dataset.
+
+## Cell 5: Statistical information
+
+```
+df.describe()
+```
+
+This displays:
+
+- Count = Total number of values.
+- Mean = Average value.
+- Std = Standard deviation.
+- Min = Minimum value.
+- Max = Maximum value.
+
+Why? To understand the numerical data before training the model.
+
+## Cell 6: Scaling data and pairplot
+
+```
+scaler = StandardScaler()subset = df.drop(    ['Geography','Gender','HasCrCard','IsActiveMember'],    axis=1)scaled = scaler.fit_transform(subset)scaled_df = pd.DataFrame(    scaled,    columns=subset.columns)sns.pairplot(scaled_df, diag_kind='kde')
+```
+
+What happens here?
+
+1. `StandardScaler()` creates a scaling object.
+2. `drop()` removes categorical columns and selected binary columns.
+3. `fit_transform()` standardizes the remaining numerical columns.
+4. `DataFrame()` converts the scaled values back into a table.
+5. `pairplot()` displays graphs comparing numerical columns.
+
+Why? To understand the relationship between numerical features and identify patterns in the data.
+
+## Cell 7: Correlation heatmap
+
+```
+sns.heatmap(    scaled_df.corr(),    annot=True,    cmap='rainbow')
+```
+
+- `corr()` calculates the relationship between numerical columns.
+- `heatmap()` displays the relationship using colours.
+- `annot=True` displays correlation values inside the boxes.
+
+Why? To understand which numerical features are related to each other.
+
+## Cell 8: Count plots
+
+```
+sns.countplot(x='Geography', data=df, hue='Exited')plt.show()sns.countplot(x='Gender', data=df, hue='Exited')plt.show()sns.countplot(x='HasCrCard', data=df, hue='Exited')plt.show()sns.countplot(x='IsActiveMember', data=df, hue='Exited')plt.show()
+```
+
+This code creates four graphs.
+
+- Geography: compares customers from different countries.
+- Gender: compares male and female customers.
+- HasCrCard: compares customers with and without credit cards.
+- IsActiveMember: compares active and inactive customers.
+
+`hue='Exited'` shows whether customers stayed or left.
+
+Why? To understand which customer groups have more churn.
+
+## Cell 9: Boxplots
+
+```
+subset = subset.drop('Exited', axis=1, errors='ignore')for col in subset.columns:    plt.figure(figsize=(8, 5))    sns.boxplot(        x='Exited',        y=col,        hue='Gender',        data=df    )    plt.title(f'Boxplot of {col} vs Exited by Gender')    plt.show()
+```
+
+Line-by-line explanation:
+
+- `drop('Exited')` removes the target column from the numerical feature list.
+- `for col in subset.columns` repeats the process for every remaining numerical feature.
+- `plt.figure()` creates a new graph.
+- `sns.boxplot()` compares the selected feature with customer churn.
+- `hue='Gender'` separates the graph by gender.
+- `plt.show()` displays the graph.
+
+Why? To compare customer information and identify differences between customers who leave and those who stay.
+
+## Cell 10: Separating input and output
+
+```
+X = df.drop('Exited', axis=1)y = df.pop('Exited')
+```
+
+This is an important step.
+
+- `X` contains input information such as age, salary, balance and geography.
+- `y` contains the answer we want to predict: `Exited`.
+
+Remember:
+
+- X = Input data.
+- y = Output or target data.
+
+Why? The model learns from X and tries to predict y.
+
+## Cell 11: Splitting the dataset
+
+```
+from sklearn.model_selection import train_test_splitX_train, X_test, y_train, y_test = train_test_split(    X, y, test_size=0.10, random_state=5)X_train, X_val, y_train, y_val = train_test_split(    X_train, y_train, test_size=0.10, random_state=5)print("X_train size is {}".format(X_train.shape[0]))print("X_val size is {}".format(X_val.shape[0]))print("X_test size is {}".format(X_test.shape[0]))
+```
+
+Your output:
+
+| Dataset    | Records | Purpose                                       |
+| ---------- | ------- | --------------------------------------------- |
+| Training   | 8100    | To teach the model                            |
+| Validation | 900     | To check model performance during development |
+| Testing    | 1000    | To check final performance                    |
+
+Why? We divide the data so that we can train the model and check how well it predicts data it has not trained on.
+
+`random_state=5` keeps the split reproducible.
+
+## Cell 12: Standardizing numerical data
+
+```
+from sklearn.preprocessing import StandardScalerscaler = StandardScaler()num_cols = [    'CreditScore', 'Age', 'Tenure',    'Balance', 'NumOfProducts', 'EstimatedSalary']num_subset = scaler.fit_transform(X_train[num_cols])X_train_num_df = pd.DataFrame(    num_subset,    columns=num_cols)
+```
+
+Here, `StandardScaler()` changes numerical values into a similar scale.
+
+For example, salary may be in thousands, while age may be between 18 and 92. Scaling helps prevent large numerical values from dominating the learning process.
+
+The remaining code adds the categorical and binary columns back:
+
+```
+X_train_num_df['Geography'] = list(X_train['Geography'])X_train_num_df['Gender'] = list(X_train['Gender'])X_train_num_df['HasCrCard'] = list(X_train['HasCrCard'])X_train_num_df['IsActiveMember'] = list(X_train['IsActiveMember'])
+```
+
+Your notebook repeats a similar process for validation and test data.
+
+Important note: Your notebook uses `fit_transform()` separately on training, validation and test data. A better practice is to fit the scaler only on training data, then use `transform()` on validation and test data. This avoids data leakage.
+
+## Cell 13: Converting categorical data into numerical data
+
+```
+X_train_num_df = pd.get_dummies(    X_train_num_df,    columns=['Geography','Gender'])X_test_num_df = pd.get_dummies(    X_test_num_df,    columns=['Geography','Gender'])X_val_num_df = pd.get_dummies(    X_val_num_df,    columns=['Geography','Gender'])
+```
+
+What is `get_dummies()`?
+
+Computers and neural networks need numerical input. But Geography and Gender contain text.
+
+This function converts text categories into numerical columns.
+
+For example:
+
+| Geography | France | Germany | Spain |
+| --------- | ------ | ------- | ----- |
+| France    | 1      | 0       | 0     |
+| Germany   | 0      | 1       | 0     |
+| Spain     | 0      | 0       | 1     |
+
+Why? To convert categorical information into a format the neural network can understand.
+
+## Cell 14: Creating the Neural Network
+
+Most important cell for your practical
+
+```
+from tensorflow.keras import Sequentialfrom tensorflow.keras.layers import Densemodel = Sequential()model.add(Dense(7, activation='relu'))model.add(Dense(10, activation='relu'))model.add(Dense(1, activation='sigmoid'))
+```
+
+Let's understand each line.
+
+1\. `Sequential()`
+
+Creates a neural network in which data passes through layers one after another.
+
+2\. `Dense(7, activation='relu')`
+
+Creates the first layer with 7 neurons.
+
+- Dense means every neuron is connected to the neurons in the previous layer.
+- ReLU is an activation function that helps the network learn patterns.
+
+3\. `Dense(10, activation='relu')`
+
+Creates the second layer with 10 neurons. It learns more patterns from the previous layer.
+
+4\. `Dense(1, activation='sigmoid')`
+
+Creates the output layer with one neuron.
+
+Sigmoid gives an output between 0 and 1, which can be treated as the probability that a customer will leave.
+
+For example:
+
+- Output 0.85 → likely to leave.
+- Output 0.20 → likely to stay.
+
+The usual classification threshold is 0.5.
+
+## Cell 15: Compiling and training the model
+
+```
+import tensorflow as tfoptimizer = tf.keras.optimizers.Adam(0.01)model.compile(    loss='binary_crossentropy',    optimizer=optimizer,    metrics=['accuracy'])model.fit(    X_train_num_df,    y_train,    epochs=100,    batch_size=10,    verbose=1)
+```
+
+Explanation:
+
+| Code                | Meaning                                          |
+| ------------------- | ------------------------------------------------ |
+| Adam                | Optimizer that updates model weights             |
+| 0.01                | Learning rate                                    |
+| binary_crossentropy | Loss function for binary classification          |
+| accuracy            | Measures correct predictions                     |
+| epochs=100          | Model goes through training data up to 100 times |
+| batch_size=10       | Processes 10 records at a time                   |
+| verbose=1           | Displays training progress                       |
+
+Your output shows that the training accuracy improves during training. The displayed warning about GPU support on Windows does not mean training failed; the notebook completed training using the available CPU.
+
+## Cell 16 and 17: Installing and checking TensorFlow
+
+Your notebook contains:
+
+```
+%pip install tensorflow
+```
+
+This installs TensorFlow if it is not already installed.
+
+Then:
+
+```
+import tensorflow as tfprint(tf.__version__)
+```
+
+Your actual output is:
+
+```
+2.21.0
+```
+
+TensorFlow installed
+
+So, the earlier `ModuleNotFoundError` is resolved in the environment used to run this notebook. If it appears again, restart the Jupyter kernel and check that the notebook is using the same Python environment.
+
+## Cell 18: Predicting validation data
+
+```
+y_pred_val = model.predict(X_val_num_df)y_pred_val[y_pred_val > 0.5] = 1y_pred_val[y_pred_val < 0.5] = 0y_pred_val = y_pred_val.tolist()X_compare_val = X_val.copy()X_compare_val['y_actual'] = y_valX_compare_val['y_pred'] = y_pred_valX_compare_val.head(10)
+```
+
+What happens?
+
+1. `model.predict()` predicts whether validation customers will leave.
+2. If the predicted value is greater than 0.5, it becomes 1.
+3. If it is below 0.5, it becomes 0.
+4. `tolist()` converts predictions into a list.
+5. `y_actual` stores the original answers.
+6. `y_pred` stores the model's predictions.
+
+Why? To compare actual customer behaviour with predicted behaviour.
+
+## Cell 19: Confusion Matrix for validation data
+
+```
+from sklearn.metrics import confusion_matrixcm_val = confusion_matrix(y_val, y_pred_val)cm_val
+```
+
+Your output:
+
+```
+[[696  20]
+ [113  71]]
+```
+
+Let's understand it:
+
+|                  | Predicted Stay (0) | Predicted Leave (1) |
+| ---------------- | ------------------ | ------------------- |
+| Actual Stay (0)  | 696                | 20                  |
+| Actual Leave (1) | 113                | 71                  |
+
+- 696: Correctly predicted customers who stayed.
+- 20: Customers predicted to leave but actually stayed.
+- 113: Customers predicted to stay but actually left.
+- 71: Correctly predicted customers who left.
+
+Why? To understand where the model makes correct and incorrect predictions.
+
+## Cell 20: Validation accuracy
+
+```
+Accuracy = 782 / 900print("Accuracy of the Model on the Validation Data set is 86.89%")loss1, accuracy1 = model.evaluate(    X_train_num_df, y_train, verbose=False)loss2, accuracy2 = model.evaluate(    X_val_num_df, y_val, verbose=False)print("Train Loss {}".format(loss1))print("Train Accuracy {}".format(accuracy1))print("Val Loss {}".format(loss2))print("Val Accuracy {}".format(accuracy2))
+```
+
+Your output:
+
+| Measurement                                          | Result |
+| ---------------------------------------------------- | ------ |
+| Validation accuracy calculated from confusion matrix | 86.89% |
+| Training loss                                        | 0.3226 |
+| Training accuracy                                    | 86.36% |
+| Validation loss                                      | 0.3540 |
+| Validation accuracy                                  | 85.22% |
+
+What is loss?
+
+Loss tells us how far the model's predictions are from the actual answers. Generally, lower loss is better.
+
+What is accuracy?
+
+Accuracy tells us how many predictions are correct out of all predictions.
+
+## Cell 21: Testing the model
+
+```
+from sklearn import metricsy_pred_test = model.predict(X_test_num_df)y_pred_test[y_pred_test > 0.5] = 1y_pred_test[y_pred_test < 0.5] = 0cm_test = metrics.confusion_matrix(y_test, y_pred_test)print("Test Confusion Matrix")cm_test
+```
+
+Your output:
+
+```
+[[772  22]
+ [126  80]]
+```
+
+|                  | Predicted Stay (0) | Predicted Leave (1) |
+| ---------------- | ------------------ | ------------------- |
+| Actual Stay (0)  | 772                | 22                  |
+| Actual Leave (1) | 126                | 80                  |
+
+The model correctly predicts 772 customers who stay and 80 customers who leave.
+
+## Cell 22: Final test accuracy
+
+```
+loss3, accuracy3 = model.evaluate(    X_test_num_df, y_test, verbose=False)print("Test Accuracy is {}".format(accuracy3))print("Test loss is {}".format(loss3))
+```
+
+Your actual output:
+
+Final test results
+
+# 85.20%
+
+Test accuracy
+
+Test loss: 0.3636
+
+These are the values recorded in your notebook.
+
+# 4. Conclusion for your practical journal
+
+The neural network model was successfully implemented to predict bank customer churn. The dataset was cleaned and preprocessed, and numerical and categorical data were prepared for training. A neural network with ReLU and Sigmoid activation functions was trained using the Adam optimizer. The model achieved approximately 85.20% test accuracy. Thus, the model can classify whether a bank customer is likely to stay or leave.
+
+# 5. Important viva questions and answers
+
+Q1. What is customer churn?
+
+Customer churn means when a customer stops using a company's or bank's services.
+
+Q2. What is a Neural Network?
+
+A neural network is a machine learning model inspired by the human brain. It learns patterns from data using connected neurons.
+
+Q3. What is ANN?
+
+ANN stands for Artificial Neural Network.
+
+Q4. What is the use of ReLU?
+
+ReLU is an activation function used in hidden layers to help the model learn complex patterns.
+
+Q5. What is the use of Sigmoid?
+
+Sigmoid gives an output between 0 and 1. It is commonly used for binary classification.
+
+Q6. Why do we use StandardScaler?
+
+To bring numerical values to a similar scale.
+
+Q7. What is an epoch?
+
+One complete pass of the training dataset through the model.
+
+Q8. What is batch size?
+
+The number of records processed together before the model updates its weights.
+
+Q9. What is Adam optimizer?
+
+Adam is an optimizer that adjusts the model's weights to reduce prediction errors.
+
+Q10. Why do we use binary cross-entropy?
+
+Because our problem has two output classes: 0 and 1.
+
+Q11. What is a confusion matrix?
+
+It is a table that shows correct and incorrect predictions made by a classification model.
+
+Q12. What accuracy did your model achieve?
+
+Approximately 85.20% on the test dataset.
+
+# 6. How to explain this practical to your external examiner
+
+You can say:
+
+> "My practical is Bank Customer Churn Prediction using an Artificial Neural Network. First, I loaded the bank customer dataset containing 10,000 records. Then I removed unnecessary columns and checked for missing values. After that, I performed data analysis, scaling and categorical data encoding. I divided the dataset into training, validation and testing sets. Then I created a neural network using two hidden layers with ReLU activation and one output layer with Sigmoid activation. I trained the model using the Adam optimizer and binary cross-entropy loss function. Finally, I evaluated the model using a confusion matrix and accuracy. The final test accuracy was approximately 85.20%."
+
+Two important points to remember:
+
+1. Your dataset's `Exited` column tells whether a customer exited; it does not specifically prove that the customer will leave within the next six months. The six-month prediction claim requires data labelled with that time period.
+2. Your notebook scales validation and test data separately using `fit_transform()`. For a technically correct implementation, fit the scaler only on training data and use `transform()` on validation and test data.
+
+You now have the complete explanation of the 24-cell notebook, including the recorded outputs and the TensorFlow installation cells.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Pair Plot: A pair plot shows the relationship between different numerical columns, such as Age, Balance and Credit Score. It helps us understand how these values are related to each other.
+
+Correlation Heatmap: A heatmap shows the relationship between numerical columns using colours and values. It helps identify positive and negative relationships between features.
+
+Geography vs Exited Count Plot: This graph compares customers from France, Germany and Spain. It shows how many customers stayed and how many left the bank in each country.
+
+Gender vs Exited Count Plot: This graph compares male and female customers. It shows how many customers from each gender stayed or left the bank.
+
+HasCrCard vs Exited Count Plot: This graph compares customers who have a credit card with those who do not. It helps us understand the relationship between credit card ownership and customer churn.
+
+IsActiveMember vs Exited Count Plot: This graph compares active and inactive bank customers. It helps us identify which group has more customers leaving the bank.
+
+Boxplots: Boxplots compare numerical values, such as Age, Balance and Salary, for customers who stayed and those who left. They help us understand the spread of data and identify unusual values.
+
+Validation Confusion Matrix: This matrix compares the actual results with the predicted results on validation data. The model correctly predicted 696 customers who stayed and 71 customers who left.
+
+Test Confusion Matrix: This matrix compares actual and predicted results on test data. The model correctly predicted 772 customers who stayed and 80 customers who left.

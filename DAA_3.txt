@@ -1,0 +1,590 @@
+#include <iostream>
+#include <vector>
+#include <iomanip>
+
+using namespace std;
+
+void printTable(const vector<vector<int>>& dp, int n, int W) {
+    cout << "\nDP Table:\n";
+    for (int i = 0; i <= n; i++) {
+        for (int w = 0; w <= W; w++) {
+            cout << setw(5) << dp[i][w];
+        }
+        cout << endl;
+    }
+}
+
+
+int knapsackDP(const vector<int>& weights, const vector<int>& values, int W, vector<int>& selectedItems) {
+    int n = weights.size();
+    vector<vector<int>> dp(n + 1, vector<int>(W + 1, 0));
+
+    
+    for (int i = 1; i <= n; i++) {
+        for (int w = 1; w <= W; w++) {
+            if (weights[i - 1] <= w) {
+                dp[i][w] = max(dp[i - 1][w], dp[i - 1][w - weights[i - 1]] + values[i - 1]);
+            } else {
+                dp[i][w] = dp[i - 1][w];
+            }
+        }
+    }
+
+    
+    printTable(dp, n, W);
+
+    
+    int maxProfit = dp[n][W];
+    int w = W;
+    for (int i = n; i > 0 && maxProfit > 0; i--) {
+        if (maxProfit != dp[i - 1][w]) {  // Item i-1 was included
+            selectedItems.push_back(i);    // Save the index (1-based) of selected item
+            maxProfit -= values[i - 1];
+            w -= weights[i - 1];
+        }
+    }
+
+    return dp[n][W];
+}
+
+int main() {
+    int choice;
+    do {
+        cout << "\nKnapsack Problem Solver";
+        cout << "\n1. Solve Knapsack Problem using DP";
+        cout << "\n2. Exit";
+        cout << "\nEnter your choice: ";
+        cin >> choice;
+
+        if (choice == 1) {
+            int n, W;
+            cout << "Enter the number of items: ";
+            cin >> n;
+
+            vector<int> weights(n), values(n);
+            cout << "Enter the weight and value of each item:\n";
+            for (int i = 0; i < n; i++) {
+                cout << "Item " << i + 1 << " - Weight: ";
+                cin >> weights[i];
+                cout << "Item " << i + 1 << " - Value: ";
+                cin >> values[i];
+            }
+
+            cout << "Enter the maximum capacity of the knapsack: ";
+            cin >> W;
+
+            vector<int> selectedItems;
+            int maxProfit = knapsackDP(weights, values, W, selectedItems);
+            cout << "\nThe maximum profit is: " << maxProfit << endl;
+
+            cout << "Items included in the knapsack (1-based index): ";
+            for (int item : selectedItems)
+                cout << item << " ";
+            cout << endl;
+
+        } else if (choice != 2) {
+            cout << "Invalid choice! Please try again.\n";
+        }
+    } while (choice != 2);
+
+    cout << "Program exited.\n";
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Enter number of items: 4
+
+Enter weights and values:
+Item 1: 2 12
+Item 2: 1 10
+Item 3: 3 20
+Item 4: 2 15
+
+Enter knapsack capacity: 5
+
+DP Table:
+0  0  0  0  0  0
+0  0 12 12 12 12
+0 10 12 22 22 22
+0 10 12 22 30 32
+0 10 15 25 30 37
+
+Maximum Profit: 37
+
+Selected Items:
+Item 1
+Item 2
+Item 4
+
+
+
+
+
+This is your 0/1 Knapsack using Dynamic Programming program. It is a good version because it displays the DP table and also shows which items are selected.
+
+## 1. Explanation in simple language (Paragraph)
+
+The program solves the 0/1 Knapsack problem using Dynamic Programming. First, it accepts the number of items, their weights, values and maximum bag capacity. It creates a DP table to store the maximum profit for different items and capacities. If an item fits in the bag, the program checks two choices: include the item or exclude the item. It selects the choice that gives maximum profit. After completing the table, it finds the maximum profit and identifies which items are included in the bag. Finally, it displays the DP table, maximum profit and selected items.
+
+## 2. Important functions
+
+- printTable(): Displays the DP table.
+- knapsackDP(): Calculates the maximum profit using Dynamic Programming.
+- main(): Accepts input, displays the menu and prints the result.
+
+## 3. Example
+
+Suppose the input is:
+
+| Item | Weight | Value |
+| ---- | ------ | ----- |
+| 1    | 2      | 12    |
+| 2    | 1      | 10    |
+| 3    | 3      | 20    |
+| 4    | 2      | 15    |
+
+Knapsack capacity = 5
+
+Expected maximum profit: 37
+
+Selected items: 2, 3, 4?
+
+Actually, items 2, 3 and 4 have total weight 6, so they cannot all fit. The optimal selection is items 1, 2 and 4:
+
+- Total weight = 2 + 1 + 2 = 5
+- Total profit = 12 + 10 + 15 = 37
+
+## 4. Time and Space Complexity
+
+| Complexity | Value    |
+| ---------- | -------- |
+| Time       | O(n × W) |
+| Space      | O(n × W) |
+
+Here, n = number of items and W = knapsack capacity.
+
+## 5. Viva Questions
+
+Q1. Which technique is used?
+
+Dynamic Programming.
+
+Q2. What is 0/1 Knapsack?
+
+Each item can either be selected or rejected.
+
+Q3. What is the purpose of the DP table?
+
+It stores previously calculated maximum profits.
+
+Q4. What is the use of `max()`?
+
+It selects the maximum profit between including and excluding an item.
+
+Q5. Can we select half an item?
+
+No.
+
+Q6. What does `selectedItems` store?
+
+The indexes of items included in the knapsack.
+
+## 6. Conclusion
+
+Thus, we successfully implemented the 0/1 Knapsack problem using Dynamic Programming and found the maximum profit along with the selected items.
+
+Small correction: Add `#include <algorithm>` for `max()`. Also validate that the number of items, weights, values and capacity are non-negative/positive as appropriate. The main algorithm is correct for valid inputs.
+
+
+
+
+
+
+
+
+
+Sure! Let's understand your 0/1 Knapsack using Dynamic Programming C++ program line by line in very simple English, so you can explain it to your external examiner.
+
+## 1. Header files
+
+```
+#include <iostream>
+#include <vector>
+#include <iomanip>
+using namespace std;
+```
+
+- `#include <iostream>` – Used for input and output (`cin`, `cout`).
+- `#include <vector>` – Used to create dynamic arrays.
+- `#include <iomanip>` – Used to format the DP table using `setw()`.
+- `using namespace std;` – Allows us to write `cout` instead of `std::cout`.
+
+Also add this header:
+
+```
+#include <algorithm>
+```
+
+It is required for the `max()` function used in your program.
+
+## 2. printTable() function
+
+```
+void printTable(const vector<vector<int>>& dp, int n, int W)
+```
+
+This function displays the Dynamic Programming table.
+
+- `void` means the function does not return any value.
+- `dp` stores the calculated values.
+- `n` represents the number of items.
+- `W` represents the maximum capacity of the knapsack.
+
+```
+cout << "\nDP Table:\n";
+```
+
+Displays the heading DP Table.
+
+```
+for (int i = 0; i <= n; i++)
+```
+
+This loop moves through each row of the DP table.
+
+```
+for (int w = 0; w <= W; w++)
+```
+
+This loop moves through each column of the DP table.
+
+```
+cout << setw(5) << dp[i][w];
+```
+
+Displays each table value with proper spacing.
+
+```
+cout << endl;
+```
+
+Moves to the next line after displaying one row.
+
+## 3. knapsackDP() function
+
+```
+int knapsackDP(const vector<int>& weights, const vector<int>& values, int W, vector<int>& selectedItems)
+```
+
+This is the main function that solves the Knapsack problem.
+
+- `weights` stores the weight of each item.
+- `values` stores the profit of each item.
+- `W` is the maximum bag capacity.
+- `selectedItems` stores the items selected in the final solution.
+- `int` means it returns the maximum profit.
+
+```
+int n = weights.size();
+```
+
+Finds the total number of items.
+
+```
+vector<vector<int>> dp(n + 1, vector<int>(W + 1, 0));
+```
+
+Creates a DP table with `n+1` rows and `W+1` columns. Initially, all values are zero.
+
+Why do we use a DP table?
+
+To store the maximum profit for different items and bag capacities.
+
+## 4. Filling the DP table
+
+```
+for (int i = 1; i <= n; i++)
+```
+
+Selects each item one by one.
+
+```
+for (int w = 1; w <= W; w++)
+```
+
+Checks different bag capacities.
+
+```
+if (weights[i - 1] <= w)
+```
+
+Checks whether the current item can fit inside the bag.
+
+If the item fits:
+
+```
+dp[i][w] = max(dp[i - 1][w],
+               dp[i - 1][w - weights[i - 1]] + values[i - 1]);
+```
+
+This is the most important line in the program.
+
+It checks two possibilities:
+
+1. Exclude the item: Keep the previous maximum profit.
+2. Include the item: Add its value to the maximum profit possible with the remaining capacity.
+
+The `max()` function selects whichever option gives more profit.
+
+```
+else {
+    dp[i][w] = dp[i - 1][w];
+}
+```
+
+If the item does not fit, we cannot include it. So, we copy the previous row's value.
+
+## 5. Displaying the DP table
+
+```
+printTable(dp, n, W);
+```
+
+Calls the `printTable()` function to display the completed DP table.
+
+## 6. Finding maximum profit
+
+```
+int maxProfit = dp[n][W];
+```
+
+Stores the final maximum profit from the last row and last column.
+
+```
+int w = W;
+```
+
+Starts checking from the maximum bag capacity.
+
+## 7. Finding selected items (Backtracking)
+
+```
+for (int i = n; i > 0 && maxProfit > 0; i--)
+```
+
+Starts from the last item and moves backwards to find which items were selected.
+
+```
+if (maxProfit != dp[i - 1][w])
+```
+
+Checks whether the current item was included.
+
+If the current profit is different from the previous row's profit, the item was selected.
+
+```
+selectedItems.push_back(i);
+```
+
+Stores the selected item's number.
+
+```
+maxProfit -= values[i - 1];
+```
+
+Subtracts the selected item's value from the remaining profit.
+
+```
+w -= weights[i - 1];
+```
+
+Subtracts the selected item's weight from the remaining capacity.
+
+```
+return dp[n][W];
+```
+
+Returns the final maximum profit.
+
+## 8. main() function
+
+```
+int main()
+```
+
+Execution of the program starts here.
+
+```
+int choice;
+```
+
+Declares a variable to store the user's menu choice.
+
+```
+do {
+```
+
+Starts a do-while loop. It displays the menu at least once.
+
+```
+cout << "\nKnapsack Problem Solver";
+cout << "\n1. Solve Knapsack Problem using DP";
+cout << "\n2. Exit";
+cout << "\nEnter your choice: ";
+cin >> choice;
+```
+
+Displays the menu and accepts the user's choice.
+
+```
+if (choice == 1)
+```
+
+If the user selects option 1, the program solves the Knapsack problem.
+
+```
+int n, W;
+cin >> n;
+```
+
+Accepts the number of items.
+
+```
+vector<int> weights(n), values(n);
+```
+
+Creates two arrays to store the weights and values of all items.
+
+```
+for (int i = 0; i < n; i++)
+```
+
+Accepts the weight and value of each item one by one.
+
+```
+cin >> weights[i];
+cin >> values[i];
+```
+
+Stores the weight and value of the current item.
+
+```
+cin >> W;
+```
+
+Accepts the maximum capacity of the bag.
+
+```
+vector<int> selectedItems;
+```
+
+Creates an empty vector to store selected item numbers.
+
+```
+int maxProfit = knapsackDP(weights, values, W, selectedItems);
+```
+
+Calls the `knapsackDP()` function and stores the maximum profit.
+
+```
+cout << "\nThe maximum profit is: " << maxProfit << endl;
+```
+
+Displays the maximum profit.
+
+```
+for (int item : selectedItems)
+    cout << item << " ";
+```
+
+Displays the numbers of the selected items.
+
+```
+else if (choice != 2)
+```
+
+If the user enters an option other than 1 or 2, it displays an invalid choice message.
+
+```
+} while (choice != 2);
+```
+
+Repeats the menu until the user selects option 2.
+
+```
+cout << "Program exited.\n";
+return 0;
+```
+
+Displays the exit message and ends the program successfully.
+
+## 9. Example to understand the program
+
+Suppose the input is:
+
+| Item | Weight | Value |
+| ---- | ------ | ----- |
+| 1    | 2      | 12    |
+| 2    | 1      | 10    |
+| 3    | 3      | 20    |
+| 4    | 2      | 15    |
+
+Maximum capacity = 5
+
+Final result
+
+- Maximum profit = 37
+- Selected items = 1, 2 and 4
+- Total weight = 2 + 1 + 2 = 5
+- Total profit = 12 + 10 + 15 = 37
+
+## 10. Important viva questions
+
+Q1. What is the 0/1 Knapsack problem?
+
+It is a problem in which we select items to get maximum profit without exceeding the bag capacity. Each item can be selected only once.
+
+Q2. Why is it called 0/1 Knapsack?
+
+Because an item is either selected (1) or not selected (0).
+
+Q3. Which technique is used?
+
+Dynamic Programming.
+
+Q4. What is a DP table?
+
+It stores the maximum profit for different items and capacities.
+
+Q5. What is backtracking?
+
+It is the process of moving backwards through the DP table to find the selected items.
+
+Q6. What is the time complexity?
+
+\\(O(n \times W)\\), where `n` is the number of items and `W` is the capacity.
+
+Q7. What is the space complexity?
+
+\\(O(n \times W)\\), because we create a two-dimensional DP table.
+
+Remember these three important things for your practical:
+
+1. `dp` table – Stores maximum profits.
+2. `max()` – Chooses whether to include or exclude an item.
+3. Backtracking – Finds the selected items.
+
+These are the main parts you should understand before explaining the program to your external examiner.

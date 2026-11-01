@@ -1,0 +1,466 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract StudentRegistry {
+    struct Student {
+        uint256 id;
+        string name;
+        uint8 age;
+        string dept;
+    }
+
+    Student[] private students;
+    mapping(uint256 => uint256) private idToIndex; // id -> index+1
+    event StudentAdded(uint256 id, string name);
+    event StudentUpdated(uint256 id, string name);
+    event EtherReceived(address indexed from, uint256 amount);
+    event FallbackCalled(address indexed from, uint256 value, bytes data);
+
+    receive() external payable {
+        emit EtherReceived(msg.sender, msg.value);
+    }
+
+    fallback() external payable {
+        emit FallbackCalled(msg.sender, msg.value, msg.data);
+    }
+
+    function addStudent(
+        uint256 id,
+        string calldata name,
+        uint8 age,
+        string calldata dept
+    ) external {
+        require(idToIndex[id] == 0, "ID exists");
+        students.push(Student(id, name, age, dept));
+        idToIndex[id] = students.length; // store index+1
+        emit StudentAdded(id, name);
+    }
+
+    function updateStudent(
+        uint256 id,
+        string calldata name,
+        uint8 age,
+        string calldata dept
+    ) external {
+        uint256 idx = idToIndex[id];
+        require(idx != 0, "Not found");
+        Student storage s = students[idx - 1];
+        s.name = name;
+        s.age = age;
+        s.dept = dept;
+        emit StudentUpdated(id, name);
+    }
+
+    function getStudentById(uint256 id)
+        external
+        view
+        returns (uint256, string memory, uint8, string memory)
+    {
+        uint256 idx = idToIndex[id];
+        require(idx != 0, "Not found");
+        Student memory s = students[idx - 1];
+        return (s.id, s.name, s.age, s.dept);
+    }
+
+    function count() external view returns (uint256) {
+        return students.length;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2. How to test this contract in Remix IDE
+1. Open Remix IDE.
+2. Create a file named StudentRegistry.sol.
+3. Paste your complete code.
+4. Compile using Solidity compiler 0.8.20 or compatible version.
+5. Select Remix VM in Deploy & Run Transactions.
+6. Click Deploy.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+5
+
+
+
+
+
+
+
+
+
+
+3. Test the functions
+After deployment, try these values:
+Function	Input
+addStudent	101, Rahul, 21, Computer
+addStudent	102, Priya, 22, IT
+count	No input
+getStudentById	101
+updateStudent	101, Rahul Sharma, 22, Computer
+getStudentById	101
+
+Expected result:
+Student 1:
+ID: 101
+Name: Rahul
+Age: 21
+Department: Computer
+
+Student 2:
+ID: 102
+Name: Priya
+Age: 22
+Department: IT
+
+Total Students: 2
+
+
+After updating student 101, the name should be Rahul Sharma and age should be 22.
+4. How to test fallback and receive
+- Receive: Send Ether to the contract address with empty calldata. The EtherReceived event should be generated.
+- Fallback: Send a call with unknown function data, such as 0x12345678. The FallbackCalled event should be generated.
+5. Important: Gas and transaction fee
+After each state-changing transaction, open the transaction receipt in Remix and observe:
+- Gas Used
+- Transaction Cost
+- Execution Cost, if displayed
+The transaction fee depends on the gas used and gas price. Do not write imaginary gas values in your practical journal; record the values shown by Remix.
+6. Conclusion
+The Student Registry smart contract is successfully created using Solidity. It uses structures to store student details, arrays to maintain multiple records, and a fallback function to handle unknown calls. It also supports adding, updating and retrieving student information. The contract can be deployed using Remix IDE, where gas usage and transaction fees can be observed.
+
+My suggestion: Use this code for your practical. It covers the required constructs and demonstrates additional Solidity concepts that may help in your external viva.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Viva Questions and Answers – Student Registry Smart Contract
+
+These are important viva questions based on your Solidity program. Answers are in simple English so you can easily learn and speak them in your practical exam.
+
+## Basic Solidity Questions
+
+1\. What is Solidity?
+
+Solidity is a programming language used to create smart contracts on the Ethereum blockchain.
+
+2\. What is a smart contract?
+
+A smart contract is a program stored on the blockchain that automatically executes when specified conditions are met.
+
+3\. What is Ethereum?
+
+Ethereum is a blockchain platform used to create and run smart contracts and decentralized applications.
+
+4\. What is Remix IDE?
+
+Remix IDE is an online tool used to write, compile, deploy and test Solidity smart contracts.
+
+5\. What is the purpose of `pragma solidity ^0.8.20`?
+
+It specifies the Solidity compiler version required for the program.
+
+6\. What is the use of SPDX license?
+
+It specifies the license under which the source code is shared. Here, MIT is used.
+
+## Structure, Array and Mapping
+
+7\. What is a structure in Solidity?
+
+A structure is used to group different types of data into one unit.
+
+8\. Why did you use a structure in your program?
+
+I used a structure to store student ID, name, age and department together.
+
+9\. What is an array?
+
+An array is a collection of multiple elements stored under one variable name.
+
+10\. Which type of array is used in your program?
+
+A dynamic array is used:
+
+```
+Student[] private students;
+```
+
+11\. What is a dynamic array?
+
+A dynamic array can increase or decrease in size when elements are added or removed.
+
+12\. What is mapping in Solidity?
+
+Mapping stores data in key-value pairs.
+
+13\. Why did you use mapping in this program?
+
+I used mapping to find a student's array position using their unique ID.
+
+14\. What is the meaning of `private`?
+
+Private means the variable or function can only be accessed directly from within the contract.
+
+15\. What is the use of `students.push()`?
+
+It adds a new student record to the array.
+
+## Functions and Keywords
+
+16\. What is the use of `addStudent()`?
+
+It adds new student details to the smart contract.
+
+17\. What is the use of `updateStudent()`?
+
+It updates the details of an existing student.
+
+18\. What is the use of `getStudentById()`?
+
+It retrieves student details using the student's ID.
+
+19\. What is the use of `count()`?
+
+It returns the total number of students stored in the array.
+
+20\. What is the use of `require()`?
+
+It checks a condition. If the condition is false, the transaction is reverted.
+
+21\. What is the use of `external`?
+
+It means the function can be called from outside the contract.
+
+22\. What is the use of `view`?
+
+View functions can read data but cannot modify the contract's state.
+
+23\. What is the difference between `memory` and `storage`?
+
+- `memory` stores temporary data during function execution.
+- `storage` refers to permanent data stored in the contract.
+
+24\. What is `calldata`?
+
+Calldata is a temporary, read-only area used for function input parameters.
+
+## Fallback and Receive Functions
+
+25\. What is a fallback function?
+
+A fallback function is a special function that executes when a call does not match any existing function in the contract, or when calldata is provided without matching a function.
+
+26\. What is a receive function?
+
+A receive function is called when the contract receives Ether with empty calldata.
+
+27\. What is the difference between fallback and receive?
+
+| Receive function              | Fallback function                          |
+| ----------------------------- | ------------------------------------------ |
+| Called when calldata is empty | Called when no function matches            |
+| Must be payable               | Can be payable or non-payable              |
+| Used to receive Ether         | Can handle unknown calls and receive Ether |
+
+28\. What does `payable` mean?
+
+Payable allows a function to receive Ether.
+
+29\. What is `msg.sender`?
+
+It represents the address of the account that called the function.
+
+30\. What is `msg.value`?
+
+It represents the amount of Ether sent with the transaction, measured in Wei.
+
+31\. What is `msg.data`?
+
+It contains the complete data sent with the transaction.
+
+## Gas and Transaction Questions
+
+32\. What is gas in Ethereum?
+
+Gas is the unit used to measure the computational work required to execute a transaction or smart contract operation.
+
+33\. Why is gas required?
+
+Gas is required to pay for the computational resources used by the Ethereum network.
+
+34\. What is gas price?
+
+Gas price is the amount paid per unit of gas.
+
+35\. How do you calculate transaction fees?
+
+Transaction fee = Gas Used × Gas Price.
+
+36\. What is Wei?
+
+Wei is the smallest unit of Ether.
+
+1 Ether = \\(10^{18}\\) Wei.
+
+37\. Does every function require gas?
+
+No. A `view` function called locally without creating a transaction generally does not cost the caller gas. State-changing transactions require gas.
+
+## Important Practical Questions
+
+38\. How do you deploy your smart contract?
+
+I write the Solidity code in Remix IDE, compile it, select the environment and click Deploy.
+
+39\. What is the purpose of the constructor?
+
+A constructor is a special function that executes only once when the contract is deployed. My program does not use a constructor.
+
+40\. What happens if you add a student with an existing ID?
+
+The `require()` condition fails and displays the error message `ID exists`.
+
+41\. What happens if you search for a student who does not exist?
+
+The contract displays the error message `Not found`.
+
+42\. Can a smart contract store multiple student records?
+
+Yes, because the program uses a dynamic array.
+
+43\. Why is the mapping value stored as `students.length`?
+
+Because the mapping stores the array index plus one. Zero indicates that the student ID does not exist.
+
+44\. Can student data be changed after adding it?
+
+Yes, using the `updateStudent()` function.
+
+45\. Is the student data stored permanently?
+
+The data stored in contract state remains on the blockchain unless the contract has functionality to change or remove it.
+
+## Most Important 10 Questions to Prepare First
+
+High priority
+
+1. What is Solidity?
+2. What is a smart contract?
+3. What is a structure?
+4. What is an array?
+5. What is mapping?
+6. What is the difference between fallback and receive?
+7. What is gas?
+8. What is `payable`?
+9. What is the use of `require()`?
+10. How do you deploy a contract in Remix IDE?
+
+## Test Your Viva Preparation
+
+Mini Viva Quiz
+
+0/5 answered
+
+Q1. Which keyword is used to define a structure in Solidity?
+
+class
+
+struct
+
+mapping
+
+array
+
+
+
+Q2. Which function adds a student to the array?
+
+count()
+
+getStudentById()
+
+addStudent()
+
+updateStudent()
+
+
+
+Q3. When is receive() called?
+
+When calldata is empty and Ether is sent
+
+When an unknown function is called
+
+When the contract is deployed
+
+When a student is updated
+
+
+
+Q4. What does msg.value represent?
+
+Sender's name
+
+Ether amount sent
+
+Student ID
+
+Gas limit
+
+
+
+Q5. What does count() return?
+
+Total gas
+
+Total students
+
+Student age
+
+Ether balance
+
+
+
+Submit answers

@@ -1,0 +1,533 @@
+Yes! Your uploaded `ml2.ipynb` notebook is matching your SPPU Machine Learning practical question.&#x20;
+
+Matched
+
+
+
+Your practical question is:
+
+> Classify the email using binary classification. Email Spam Detection has two states: Normal State – Not Spam and Abnormal State – Spam. Use K-Nearest Neighbors and Support Vector Machine for classification. Analyze their performance.
+
+Let's compare the question with your notebook.
+
+## 1. Question vs your program
+
+| Practical requirement  | Your notebook                                             |
+| ---------------------- | --------------------------------------------------------- |
+| Email Spam Detection   | Uses `Emails.csv`                                         |
+| Binary classification  | Uses two classes: 0 and 1                                 |
+| Normal – Not Spam      | `Prediction = 0`                                          |
+| Abnormal – Spam        | `Prediction = 1`                                          |
+| K-Nearest Neighbors    | Implemented using `KNeighborsClassifier`                  |
+| Support Vector Machine | Implemented using `SVC`                                   |
+| Performance analysis   | Uses accuracy, confusion matrix and classification report |
+
+So, all the main requirements are covered.
+
+## 2. Understanding your dataset
+
+Your dataset contains 5,172 emails and 3,002 columns.
+
+- `Email No.` – Email identification.
+- Other columns – Word-frequency values, such as `the`, `to`, `and`, `for`.
+- `Prediction` – Final classification result.
+
+Two classes in your dataset
+
+Not Spam (0)\
+3,672 emails
+
+Spam (1)\
+1,500 emails
+
+## 3. Performance analysis from your actual output
+
+K-Nearest Neighbors (KNN)
+
+# 86.28%
+
+Accuracy
+
+Confusion matrix\
+\| | Predicted Not Spam | Predicted Spam |\
+\|---|---:|---:|\
+\| Actual Not Spam | 646 | 93 |\
+\| Actual Spam | 49 | 247 |\
+|
+
+- Correct predictions: 893
+- Incorrect predictions: 142
+
+  Support Vector Machine (SVM)
+  # 95.94%
+  Accuracy
+
+  Confusion matrix\
+  \| | Predicted Not Spam | Predicted Spam |\
+  \|---|---:|---:|\
+  \| Actual Not Spam | 715 | 24 |\
+  \| Actual Spam | 18 | 278 |\
+  |
+- Correct predictions: 993
+- Incorrect predictions: 42
+
+## 4. Final comparison
+
+| Parameter        | KNN    | SVM    |
+| ---------------- | ------ | ------ |
+| Accuracy         | 86.28% | 95.94% |
+| Precision (Spam) | 73%    | 92%    |
+| Recall (Spam)    | 83%    | 94%    |
+| F1-score (Spam)  | 78%    | 93%    |
+
+SVM performs better
+
+Conclusion for your practical file:
+
+The email spam detection system is implemented using K-Nearest Neighbors and Support Vector Machine algorithms. Both algorithms classify emails into Spam and Not Spam categories. KNN achieved 86.28% accuracy, whereas SVM achieved 95.94% accuracy. Therefore, SVM performed better than KNN on the given dataset.
+
+## 5. One small correction in your code
+
+In your KNN section, you wrote:
+
+```
+print("-------svc----------")
+```
+
+Change it to:
+
+```
+print("-------KNN----------")
+```
+
+This is only a heading correction. Your classification code is correct.
+
+My recommendation: You can use this notebook for your practical. I can also explain all 6 code cells line by line, including what each line does and why it is used, so you can confidently explain it to your external examiner.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Let's study your actual `ml2.ipynb` program: Email Spam Detection using KNN and SVM.
+
+I'll explain each of the 6 code cells in simple English, including:
+
+- What each line does.
+- Why we use that line.
+- What output it produces.
+- How to explain it to your external examiner.
+
+# 1. Aim of the practical
+
+To classify emails into two categories using binary classification:
+
+- 0 – Not Spam (Normal email)
+- 1 – Spam (Abnormal email)
+
+We use two Machine Learning algorithms:
+
+1. K-Nearest Neighbors (KNN)
+2. Support Vector Machine (SVM)
+
+# 2. Cell 1 – Import library and load dataset
+
+Your code:
+
+```
+import pandas as pddf = pd.read_csv('Emails.csv')
+```
+
+Line-by-line explanation:
+
+| Code                             | What it does                | Why we use it                          |
+| -------------------------------- | --------------------------- | -------------------------------------- |
+| `import pandas as pd`            | Imports the Pandas library. | To handle data in table format.        |
+| `df = pd.read_csv('Emails.csv')` | Reads the CSV file.         | To load the email dataset into Python. |
+
+What is `df`?
+
+`df` stands for DataFrame. It stores the dataset in rows and columns, like an Excel sheet.
+
+What is CSV?
+
+CSV means Comma-Separated Values. It is a file format used to store tabular data.
+
+# 3. Cell 2 – Display and understand the dataset
+
+Your code:
+
+```
+print(df.columns)print(df.head())print(df['Prediction'].value_counts())
+```
+
+Explanation:
+
+1. `df.columns` – Displays all column names.
+2. `df.head()` – Displays the first five rows of the dataset.
+3. `df['Prediction'].value_counts()` – Counts how many emails belong to each category.
+
+Your actual output:
+
+```
+Prediction
+0    3672
+1    1500
+Name: count, dtype: int64
+```
+
+This means:
+
+| Category | Meaning  | Number of emails |
+| -------- | -------- | ---------------- |
+| 0        | Not Spam | 3672             |
+| 1        | Spam     | 1500             |
+| Total    |          | 5172             |
+
+Why do we use this cell?
+
+To understand the dataset and check how many spam and non-spam emails are available.
+
+# 4. Cell 3 – Separate input and output
+
+Your code:
+
+```
+X = df.drop(columns=['Prediction', 'Email No.'])y = df['Prediction']
+```
+
+This is a very important part of Machine Learning.
+
+Explanation:
+
+- `X` contains input data (features).
+- `y` contains the correct output (target).
+
+Let's understand with an example:
+
+| Email No. | the | to | and | Prediction |
+| --------- | --- | -- | --- | ---------- |
+| Email 1   | 0   | 0  | 0   | 0          |
+| Email 2   | 8   | 13 | 6   | 1          |
+
+- `df.drop(columns=['Prediction', 'Email No.'])` removes the email number and target column from the inputs.
+- `df['Prediction']` selects the target column.
+
+Why remove Email No.?
+
+Because the email number does not help the model identify spam. It is only an identification number.
+
+Why separate X and y?
+
+Because the model learns from X and predicts y.
+
+Class AClass BPredictionClass A
+
+k = 5: Class A wins 3–2; the point is Class A.
+
+\\(k\\)
+
+Give feedback
+
+# 5. Cell 4 – Split the dataset
+
+Your code:
+
+```
+from sklearn.model_selection import train_test_splitX_train, X_test, y_train, y_test = train_test_split(    X, y, test_size=0.2, random_state=42)
+```
+
+Explanation:
+
+First, we import `train_test_split` to divide our dataset into training and testing parts.
+
+| Variable  | Meaning                      |
+| --------- | ---------------------------- |
+| `X_train` | Input data for training      |
+| `X_test`  | Input data for testing       |
+| `y_train` | Correct answers for training |
+| `y_test`  | Correct answers for testing  |
+
+What does `test_size=0.2` mean?
+
+It means:
+
+- 80% data is used for training.
+- 20% data is used for testing.
+
+Your dataset division
+
+80% Training
+
+20% Testing
+
+Approximately 4,137 training records and 1,035 testing records.
+
+What is `random_state=42`?
+
+It makes the random split repeatable, so we get the same split when we run the program again.
+
+Why do we split data?
+
+To train the model on one part and check its performance on data it has not seen during training.
+
+# 6. Cell 5 – K-Nearest Neighbors (KNN)
+
+Your actual code:
+
+```
+from sklearn.neighbors import KNeighborsClassifierfrom sklearn.metrics import classification_report, accuracy_score, confusion_matrixknn = KNeighborsClassifier(n_neighbors=5)knn.fit(X_train, y_train)knn_pred = knn.predict(X_test)print("-------svc----------")print("accuracy: ", accuracy_score(y_test, knn_pred))print("confusion matrix: \n", confusion_matrix(y_test, knn_pred))print("classification report: \n", classification_report(y_test, knn_pred))
+```
+
+Line-by-line explanation:
+
+| Code                                  | What it does                  | Why we use it                                   |
+| ------------------------------------- | ----------------------------- | ----------------------------------------------- |
+| `KNeighborsClassifier`                | Imports KNN algorithm.        | To classify emails.                             |
+| `classification_report`               | Imports performance report.   | To check precision, recall and F1-score.        |
+| `accuracy_score`                      | Imports accuracy calculation. | To check correct predictions.                   |
+| `confusion_matrix`                    | Imports confusion matrix.     | To check correct and incorrect classifications. |
+| `KNeighborsClassifier(n_neighbors=5)` | Creates KNN model with K=5.   | To consider the five nearest training records.  |
+| `knn.fit(X_train, y_train)`           | Trains the model.             | To learn from training data.                    |
+| `knn.predict(X_test)`                 | Predicts email categories.    | To identify spam and non-spam emails.           |
+
+How does KNN work?
+
+KNN checks the five nearest training examples to the email being classified. It then assigns the class that receives the majority vote.
+
+For example:
+
+Class AClass BPredictionClass A
+
+k = 5: Class A wins 3–2; the point is Class A.
+
+\\(k\\)
+
+Give feedback
+
+Suppose the five nearest emails have these classes:
+
+- 3 emails are Spam.
+- 2 emails are Not Spam.
+
+The new email is classified as Spam, because Spam receives more votes.
+
+Your actual KNN output:
+
+```
+-------svc----------
+accuracy: 0.8628019323671497
+
+confusion matrix:
+[[646  93]
+ [ 49 247]]
+
+classification report:
+
+              precision  recall  f1-score  support
+
+0                0.93     0.87      0.90      739
+1                0.73     0.83      0.78      296
+
+accuracy                              0.86     1035
+```
+
+KNN accuracy: 86.28%
+
+Small correction: Your print heading says `svc`, but this is the KNN section. Change it to:
+
+```
+print("-------KNN----------")
+```
+
+# 7. Cell 6 – Support Vector Machine (SVM)
+
+Your actual code:
+
+```
+from sklearn.svm import SVCsvm = SVC(kernel='linear')svm.fit(X_train, y_train)svm_pred = svm.predict(X_test)print("-------svc----------")print("accuracy: ", accuracy_score(y_test, svm_pred))print("confusion matrix: \n", confusion_matrix(y_test, svm_pred))print("classification report: \n", classification_report(y_test, svm_pred))
+```
+
+Line-by-line explanation:
+
+| Code                          | What it does                      | Why we use it                                                           |
+| ----------------------------- | --------------------------------- | ----------------------------------------------------------------------- |
+| `from sklearn.svm import SVC` | Imports SVM classifier.           | To classify emails using SVM.                                           |
+| `SVC(kernel='linear')`        | Creates SVM with a linear kernel. | To separate spam and non-spam classes using a linear decision boundary. |
+| `svm.fit(X_train, y_train)`   | Trains the SVM model.             | To learn the difference between the two classes.                        |
+| `svm.predict(X_test)`         | Predicts the test emails.         | To classify them as Spam or Not Spam.                                   |
+
+How does SVM work?
+
+SVM tries to find the best separating boundary between two classes.
+
+For example:
+
+- One side represents Not Spam.
+- The other side represents Spam.
+- The boundary separates the two categories.
+
+[Support Vector Machine (SVM) in Python](https://images.openai.com/static-rsc-4/bOrUmqIBBtW53BQeRnCs19VXwqNBetwyxTwH9K7PXWBFH6P7_eiSpUA_qb1__4Fc5MA4drRqDxbyuiTd-9qlLwemdysgqILU9fKFFEmRyzfRwFCGcys16DBtCO103NgCbK20NEcvn0LMhLIB91h_z7BIegxlAxx3FAJhJhKw9sg?purpose=inline)
+
+What is a kernel?
+
+A kernel helps SVM create a decision boundary. Your program uses a `linear` kernel, which creates a straight separating boundary.
+
+Your actual SVM output:
+
+```
+-------svc----------
+accuracy: 0.9594202898550724
+
+confusion matrix:
+[[715  24]
+ [ 18 278]]
+
+classification report:
+
+              precision  recall  f1-score  support
+
+0                0.98     0.97      0.97      739
+1                0.92     0.94      0.93      296
+
+accuracy                              0.96     1035
+```
+
+SVM accuracy: 95.94%
+
+# 8. Understanding the confusion matrix
+
+This is very important for your practical viva.
+
+Your SVM confusion matrix is:
+
+```
+[[715  24]
+ [ 18 278]]
+```
+
+|                 | Predicted Not Spam | Predicted Spam |
+| --------------- | ------------------ | -------------- |
+| Actual Not Spam | 715                | 24             |
+| Actual Spam     | 18                 | 278            |
+
+Understand each value:
+
+- 715: Correctly identified Not Spam emails.
+- 24: Not Spam emails wrongly identified as Spam.
+- 18: Spam emails wrongly identified as Not Spam.
+- 278: Correctly identified Spam emails.
+
+Total correct predictions:
+
+715 + 278 = 993
+
+Total incorrect predictions:
+
+24 + 18 = 42
+
+Accuracy:
+
+\\[ \text{Accuracy}=\frac{993}{1035}\times100 =95.94\\% \\]
+
+# 9. Final performance comparison
+
+Your notebook compares both algorithms using accuracy, precision, recall, F1-score and confusion matrix.
+
+| Parameter             | KNN    | SVM    |
+| --------------------- | ------ | ------ |
+| Accuracy              | 86.28% | 95.94% |
+| Precision (Spam)      | 73%    | 92%    |
+| Recall (Spam)         | 83%    | 94%    |
+| F1-score (Spam)       | 78%    | 93%    |
+| Incorrect predictions | 142    | 42     |
+
+Winner: SVM
+
+Why is SVM better in your experiment?
+
+1. SVM has higher accuracy than KNN.
+2. SVM makes fewer incorrect predictions.
+3. SVM has better precision and recall for spam emails.
+4. Therefore, SVM performs better on this dataset.
+
+# 10. Conclusion for practical journal
+
+You can write this in your practical file:
+
+The Email Spam Detection system is implemented using binary classification. The dataset is divided into two classes: Spam and Not Spam. K-Nearest Neighbors and Support Vector Machine algorithms are used for classification. The performance of both algorithms is evaluated using accuracy, confusion matrix, precision, recall and F1-score. KNN achieved 86.28% accuracy, while SVM achieved 95.94% accuracy. Hence, SVM gives better performance than KNN for the given dataset.
+
+# 11. Important viva questions and answers
+
+| Question                              | Simple answer                                                      |
+| ------------------------------------- | ------------------------------------------------------------------ |
+| 1. What is spam?                      | Unwanted or unwanted promotional emails.                           |
+| 2. What is binary classification?     | Classification into two categories.                                |
+| 3. What are the two classes?          | Spam and Not Spam.                                                 |
+| 4. What is KNN?                       | An algorithm that classifies data using its nearest neighbours.    |
+| 5. What is K in KNN?                  | Number of nearest neighbours considered.                           |
+| 6. What is SVM?                       | An algorithm that separates two classes using a decision boundary. |
+| 7. What is a kernel?                  | A function used by SVM to create a decision boundary.              |
+| 8. What is accuracy?                  | Percentage of correct predictions.                                 |
+| 9. What is a confusion matrix?        | A table showing correct and incorrect predictions.                 |
+| 10. Which algorithm performed better? | SVM, with 95.94% accuracy.                                         |
+| 11. What is precision?                | Out of emails predicted as spam, how many were actually spam.      |
+| 12. What is recall?                   | Out of actual spam emails, how many were correctly identified.     |
+
+## 12. Improvements you can mention if the examiner asks
+
+Your current notebook works, but you can improve it by:
+
+- Applying feature scaling before KNN and SVM.
+- Using cross-validation to test model consistency.
+- Comparing different K values in KNN.
+- Testing different SVM kernels.
+- Using a larger and more varied email dataset.
+
+One important point: Your current notebook does not apply feature scaling. Don't tell the examiner that scaling was performed.
+
+## Practice: Check your understanding
+
+Mini viva test
+
+Q1. What does Prediction = 1 represent in your dataset?
+
+Not Spam
+
+Spam
+
+Email number
+
+
+
+Q2. What does n_neighbors=5 mean?
+
+Five email columns
+
+Five nearest neighbours
+
+Five algorithms
+
+
+
+Q3. Which algorithm achieved 95.94% accuracy?
+
+KNN
+
+SVM
+
+Both
+
+
+
+Answered: 0 / 3
+
+My advice: First understand X and y, train-test split, KNN, SVM and confusion matrix. These are the most important parts to explain confidently in your external practical.

@@ -1,0 +1,379 @@
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Branch and Bound function
+void solve(int col, vector<int>& Left,
+           vector<int>& LeftDiag, vector<int>& RightDiag,
+           vector<string>& board,
+           vector<vector<string>>& ans, int n) {
+
+    // If all queens are placed
+    if (col == n) {
+        ans.push_back(board);
+        return;
+    }
+
+    // Try placing queen in every row
+    for (int row = 0; row < n; row++) {
+
+        // Check whether position is safe
+        if (Left[row] == 0 &&
+            LeftDiag[row + col] == 0 &&
+            RightDiag[row - col + n - 1] == 0) {
+
+            // Place queen
+            board[row][col] = 'Q';
+
+            // Mark row and diagonals as occupied
+            Left[row] = 1;
+            LeftDiag[row + col] = 1;
+            RightDiag[row - col + n - 1] = 1;
+
+            // Move to next column
+            solve(col + 1, Left, LeftDiag, RightDiag,
+                  board, ans, n);
+
+            // Backtracking: remove queen
+            board[row][col] = '.';
+
+            // Reset the arrays
+            Left[row] = 0;
+            LeftDiag[row + col] = 0;
+            RightDiag[row - col + n - 1] = 0;
+        }
+    }
+}
+
+int main() {
+
+    int n;
+
+    cout << "Enter the size of N: ";
+    cin >> n;
+
+    if (n <= 0) {
+        cout << "Please enter a positive number.";
+        return 0;
+    }
+
+    // Create an empty chessboard
+    vector<string> board(n, string(n, '.'));
+
+    // Store all possible solutions
+    vector<vector<string>> ans;
+
+    // Initialize row and diagonal arrays
+    vector<int> Left(n, 0);
+    vector<int> LeftDiag(2 * n - 1, 0);
+    vector<int> RightDiag(2 * n - 1, 0);
+
+    // Start solving from column 0
+    solve(0, Left, LeftDiag, RightDiag, board, ans, n);
+
+    // Display all solutions
+    if (ans.empty()) {
+        cout << "Solution does not exist.";
+    }
+    else {
+        cout << "\nTotal solutions: " << ans.size() << endl;
+
+        for (int k = 0; k < ans.size(); k++) {
+
+            cout << "\nSolution " << k + 1 << ":\n";
+
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    cout << ans[k][i][j] << " ";
+                }
+                cout << endl;
+            }
+        }
+    }
+
+    return 0;
+}
+
+
+
+
+
+Enter the size of N: 4
+Total solutions: 2
+
+Solution 1:
+. Q . .
+. . . Q
+Q . . .
+. . Q .
+
+Solution 2:
+. . Q .
+Q . . .
+. . . Q
+. Q . .
+
+
+The N-Queens problem is solved using Backtracking with Branch and Bound. First, the program creates an N × N chessboard filled with dots. It uses three arrays to check whether a row and diagonals are occupied. The program places queens column by column. If a position is safe, it places the queen and moves to the next column. If all queens are placed successfully, the solution is stored in the answer vector. If a placement does not lead to a solution, the program removes the queen and tries another position. Finally, it displays all possible solutions.
+Important points for viva
+1. Q represents: Queen.
+2. Dot (.) represents: Empty position.
+3. Technique used: Backtracking with Branch and Bound.
+4. Left array: Checks occupied rows.
+5. LeftDiag array: Checks one diagonal direction.
+6. RightDiag array: Checks the other diagonal direction.
+7. Base condition: col == n.
+8. Time complexity: Commonly expressed as \(O(N!)\) as an upper-bound estimate.
+9. Space complexity: \(O(N^2)\) for storing the board and solutions, plus auxiliary arrays and recursion.
+Note: This program generates all possible solutions. It does not fix the first queen at a particular position.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Okay! You want to understand each line of code, what it does AND why we use it so that you can explain it confidently to the external examiner.
+
+# N-Queens using Backtracking and Branch and Bound
+
+## 1. Header file
+
+```
+#include <bits/stdc++.h>
+using namespace std;
+```
+
+- `#include <bits/stdc++.h>` – Includes all standard C++ libraries. We use it because our program needs vectors, strings and input/output.
+- `using namespace std;` – Avoids writing `std::` before `cout`, `cin` and `vector`.
+
+## 2. Solve function
+
+```
+void solve(int col, vector<int>& Left,
+           vector<int>& LeftDiag, vector<int>& RightDiag,
+           vector<string>& board,
+           vector<vector<string>>& ans, int n)
+```
+
+Why do we use this?
+
+This function is responsible for placing queens one by one in different columns.
+
+- `col` – Tells us which column we are currently filling.
+- `Left` – Stores occupied rows.
+- `LeftDiag` – Stores occupied diagonals.
+- `RightDiag` – Stores occupied diagonals in the other direction.
+- `board` – Stores the chessboard.
+- `ans` – Stores all possible solutions.
+- `n` – Stores the size of the chessboard.
+
+## 3. Base condition
+
+```
+if (col == n) {
+    ans.push_back(board);
+    return;
+}
+```
+
+Why do we use this?
+
+When `col == n`, it means all columns have queens placed successfully.
+
+- `ans.push_back(board)` – Saves the completed solution.
+- `return` – Stops the current recursive call.
+
+## 4. For loop
+
+```
+for (int row = 0; row < n; row++)
+```
+
+Why do we use this?
+
+To check every row in the current column and find a safe position for the queen.
+
+## 5. Safety condition
+
+```
+if (Left[row] == 0 &&
+    LeftDiag[row + col] == 0 &&
+    RightDiag[row - col + n - 1] == 0)
+```
+
+Why do we use this?
+
+To check whether the queen can be placed safely.
+
+- `Left[row] == 0` – Checks whether the row is empty.
+- `LeftDiag[row + col] == 0` – Checks whether one diagonal is empty.
+- `RightDiag[row - col + n - 1] == 0` – Checks whether the other diagonal is empty.
+
+Why use 0? It means the position is free.
+
+Why use 1? It means a queen is already occupying that row or diagonal.
+
+## 6. Place the queen
+
+```
+board[row][col] = 'Q';
+```
+
+Why do we use this?
+
+To place a queen at the safe position on the chessboard.
+
+## 7. Mark the arrays
+
+```
+Left[row] = 1;
+LeftDiag[row + col] = 1;
+RightDiag[row - col + n - 1] = 1;
+```
+
+Why do we use this?
+
+After placing a queen, we mark its row and diagonals as occupied so that another queen cannot attack it.
+
+## 8. Recursive call
+
+```
+solve(col + 1, Left, LeftDiag, RightDiag,
+      board, ans, n);
+```
+
+Why do we use this?
+
+To move to the next column and place the next queen.
+
+We use `col + 1` because we place only one queen in each column.
+
+## 9. Backtracking
+
+```
+board[row][col] = '.';
+
+Left[row] = 0;
+LeftDiag[row + col] = 0;
+RightDiag[row - col + n - 1] = 0;
+```
+
+Why do we use this?
+
+If we finish exploring a position, we remove the queen and reset the arrays.
+
+This allows us to try another possible position.
+
+This process is called Backtracking.
+
+## 10. Main function
+
+Accept chessboard size
+
+```
+int n;
+cin >> n;
+```
+
+Why? To accept the number of queens and the size of the chessboard from the user.
+
+Create chessboard
+
+```
+vector<string> board(n, string(n, '.'));
+```
+
+Why? To create an N × N chessboard with all positions empty.
+
+For N = 4:
+
+```
+....
+....
+....
+....
+```
+
+Store solutions
+
+```
+vector<vector<string>> ans;
+```
+
+Why? To store all possible valid chessboard arrangements.
+
+Create three arrays
+
+```
+vector<int> Left(n, 0);
+vector<int> LeftDiag(2*n-1, 0);
+vector<int> RightDiag(2*n-1, 0);
+```
+
+Why?
+
+- `Left` has N elements because there are N rows.
+- Both diagonal arrays have `2*N-1` elements because an N × N chessboard has `2*N-1` diagonals in each direction.
+
+Call solve function
+
+```
+solve(0, Left, LeftDiag, RightDiag, board, ans, n);
+```
+
+Why? To start placing queens from the first column (column 0).
+
+Display solutions
+
+```
+for (int k = 0; k < ans.size(); k++) {
+    cout << "\nSolution " << k + 1 << ":\n";
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cout << ans[k][i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+```
+
+Why? To display every valid solution stored in the `ans` vector.
+
+## 11. Most important viva questions
+
+| Question                              | Simple answer                                            |
+| ------------------------------------- | -------------------------------------------------------- |
+| Why do we use Backtracking?           | To try different positions and undo an incorrect choice. |
+| Why do we use Branch and Bound?       | To avoid checking unsafe positions repeatedly.           |
+| Why do we use recursion?              | To place queens column by column.                        |
+| Why do we use three arrays?           | To check rows and diagonals quickly.                     |
+| Why is `col == n` the base condition? | Because all queens have been placed.                     |
+| Why do we use `push_back()`?          | To save each valid solution.                             |
+| Why do we use `vector`?               | To store data dynamically.                               |
+| Why do we use `Q`?                    | To represent a queen.                                    |
+| Why do we use `.`?                    | To represent an empty cell.                              |
+| Why do we reset arrays?               | To try another possible arrangement.                     |
+
+## 12. Complexity
+
+- Time Complexity: Commonly expressed as \\(O(N!)\\) as an upper-bound estimate for the search.
+- Space Complexity: \\(O(N^2)\\) for the chessboard and stored solutions, plus auxiliary arrays and recursion.
+
+One important thing to remember for your external:
+
+The three most important parts are:
+
+1. Safety condition: Checks whether a queen can be placed.
+2. Recursive call: Moves to the next column.
+3. Backtracking: Removes the queen and tries another position.
+
+If you understand why these three are used, you can explain the main logic of the entire program.
