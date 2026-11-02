@@ -1,0 +1,276 @@
+# Blockchain Technology – MetaMask Viva Questions and Answers
+
+These questions cover both practicals:
+
+1. Installation of MetaMask and study of Ether spent per transaction.
+2. Creating your own cryptocurrency wallet using MetaMask.
+
+Answers are in simple English so you can easily remember them during your SPPU practical viva.
+
+## 1. Basic MetaMask questions
+
+Q1. What is MetaMask?
+
+MetaMask is a cryptocurrency wallet used to store, send and receive cryptocurrencies. It also connects users to blockchain applications.
+
+Q2. Why do we use MetaMask?
+
+We use MetaMask to:
+
+- Create a cryptocurrency wallet.
+- Send and receive Ether.
+- Connect to decentralized applications.
+- Interact with smart contracts.
+
+Q3. Is MetaMask a software or hardware wallet?
+
+MetaMask is primarily a software wallet.
+
+Q4. Is MetaMask free?
+
+Yes, creating and using a wallet is free. However, blockchain transactions may require gas fees.
+
+Q5. What is a cryptocurrency wallet?
+
+A cryptocurrency wallet is a digital tool used to manage crypto assets and control blockchain accounts.
+
+Q6. Which cryptocurrency is mainly associated with Ethereum?
+
+Ether (ETH).
+
+Q7. What is Ethereum?
+
+Ethereum is a blockchain platform used to create smart contracts and decentralized applications.
+
+Q8. What is a decentralized application (DApp)?
+
+A DApp is an application that works using blockchain technology and smart contracts.
+
+## 2. Wallet creation questions
+
+Q9. How do you create a wallet in MetaMask?
+
+1. Install the MetaMask extension.
+2. Open MetaMask.
+3. Select Create a new wallet.
+4. Set a password.
+5. Securely save the Secret Recovery Phrase.
+6. Confirm the phrase.
+7. The wallet is ready.
+
+Q10. What is a wallet address?
+
+A wallet address is a public address used to send and receive cryptocurrency.
+
+Q11. What is a private key?
+
+A private key is a secret code that gives control over a cryptocurrency account.
+
+Q12. What is a Secret Recovery Phrase?
+
+It is a group of words used to recover a wallet if we lose access to it.
+
+Q13. Can we share our wallet address?
+
+Yes. A public wallet address can be shared to receive cryptocurrency.
+
+Q14. Can we share our private key or recovery phrase?
+
+No. We must never share them with anyone.
+
+Q15. What happens if we lose our Secret Recovery Phrase?
+
+If we lose access to the wallet and do not have another recovery method, we may permanently lose access to the funds.
+
+## 3. Ether and transaction questions
+
+Q16. What is Ether?
+
+Ether is the native cryptocurrency of the Ethereum blockchain.
+
+Q17. What is a blockchain transaction?
+
+A blockchain transaction is an operation recorded on the blockchain, such as transferring Ether or interacting with a smart contract.
+
+Q18. What is a gas fee?
+
+Gas fee is the fee paid to the Ethereum network for processing a transaction.
+
+Q19. Why do we pay gas fees?
+
+We pay gas fees to compensate the network for the computational work required to process transactions.
+
+Q20. What is Gas Used?
+
+Gas Used is the actual amount of computational work consumed by a transaction, measured in gas units.
+
+Q21. What is Gas Limit?
+
+Gas Limit is the maximum amount of gas allowed for a transaction.
+
+Q22. What is Gwei?
+
+Gwei is a smaller unit of Ether used to express gas prices.
+
+\\[ 1\ ETH = 10^9\ Gwei \\]
+
+Q23. How is the transaction fee calculated?
+
+\\[ \text{Transaction Fee}=\text{Gas Used}\times\text{Gas Price} \\]
+
+Q24. Does every transaction have the same gas fee?
+
+No. Gas fees depend on the transaction's complexity and network conditions.
+
+Q25. What happens if a transaction fails?
+
+The transaction is reverted, but gas may still be charged for the computation performed.
+
+## 4. Remix IDE and MetaMask questions
+
+Q26. What is Remix IDE?
+
+Remix is an online development environment used to write, compile, deploy and test Solidity smart contracts.
+
+Q27. Why do we connect MetaMask with Remix?
+
+We connect MetaMask to Remix to deploy and interact with smart contracts using our blockchain wallet.
+
+Q28. What is a test network?
+
+A test network is a blockchain network used to test applications without using real cryptocurrency.
+
+Q29. What is Sepolia?
+
+Sepolia is an Ethereum test network used for testing smart contracts and transactions.
+
+Q30. What is test Ether?
+
+Test Ether is Ether used on test networks. It has no real monetary value.
+
+Q31. What is the difference between Remix VM and Sepolia?
+
+| Remix VM                  | Sepolia                                  |
+| ------------------------- | ---------------------------------------- |
+| Local testing environment | Public Ethereum test network             |
+| No MetaMask required      | MetaMask can be connected                |
+| Transactions are local    | Transactions are recorded on the testnet |
+| Uses simulated Ether      | Uses test Ether                          |
+
+## 5. Important comparison questions
+
+Q32. Difference between public key and private key?
+
+| Public key                               | Private key                        |
+| ---------------------------------------- | ---------------------------------- |
+| Used to derive a wallet address.         | Used to sign transactions.         |
+| Can be shared in appropriate contexts.   | Must be kept secret.               |
+| Does not give direct control over funds. | Provides control over the account. |
+
+Q33. Difference between Coin and Token?
+
+- Coin: A cryptocurrency that operates on its own blockchain, such as ETH.
+- Token: A digital asset created using an existing blockchain, such as an ERC-20 token on Ethereum.
+
+Q34. What is a transaction hash?
+
+A transaction hash is a unique identification number given to a blockchain transaction.
+
+Q35. What is Etherscan?
+
+is a blockchain explorer used to check transactions, wallet addresses, blocks and gas fees.
+
+Website: [Etherscan](https://etherscan.io/?utm_source=chatgpt.com).
+
+## 6. Most important questions – revise before viva
+
+High priority
+
+1. What is MetaMask?
+2. What is Ether?
+3. What is a gas fee?
+4. What is Gwei?
+5. What is a Secret Recovery Phrase?
+6. What is a private key?
+7. What is a wallet address?
+8. How do you create a MetaMask wallet?
+9. How do you connect MetaMask with Remix?
+10. What is Sepolia?
+11. How do you calculate transaction fees?
+12. What happens when a transaction fails?
+
+## 7. Test your viva preparation
+
+Try answering these questions without looking at the notes.
+
+Mini Viva Test
+
+6 questions
+
+Q1. What is MetaMask?
+
+A cryptocurrency wallet
+
+A programming language
+
+A database
+
+Correct! MetaMask is a cryptocurrency wallet.
+
+Q2. What is the native cryptocurrency of Ethereum?
+
+Bitcoin
+
+Ether
+
+Solana
+
+Correct! Ether (ETH) is Ethereum's native cryptocurrency.
+
+Q3. What is Gwei used for?
+
+Storing passwords
+
+Measuring gas price
+
+Creating wallet addresses
+
+Incorrect. Gwei is commonly used to express gas prices.
+
+Q4. Which information must never be shared?
+
+Public wallet address
+
+Transaction hash
+
+Secret Recovery Phrase
+
+Correct! Never share your Secret Recovery Phrase.
+
+Q5. Which network is used for Ethereum testing?
+
+Sepolia
+
+Mainnet only
+
+Localhost only
+
+Correct! Sepolia is an Ethereum test network.
+
+Q6. How is a transaction fee calculated?
+
+Gas Used × Gas Price
+
+Gas Limit + ETH
+
+Wallet Address × Gas
+
+Correct! Transaction fee = Gas Used × Gas Price.
+
+Submit answers
+
+# Score: 5/6
+
+Viva tip: If your teacher asks, "What did you learn in this practical?", say:
+
+"I learned how to install MetaMask, create a cryptocurrency wallet, connect it with Remix IDE, perform Ether transactions and calculate the gas fee for each transaction."

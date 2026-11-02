@@ -1,0 +1,394 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract BankAccount {
+    mapping(address => uint256) private balances;
+
+    event Deposit(address indexed account, uint256 amount);
+    event Withdraw(address indexed account, uint256 amount);
+
+    function deposit() public payable {
+        require(msg.value > 0, "Deposit amount must be greater than 0");
+        balances[msg.sender] += msg.value;
+        emit Deposit(msg.sender, msg.value);
+    }
+
+    function withdraw(uint256 amount) public {
+        require(amount > 0, "Withdraw amount must be greater than 0");
+        require(balances[msg.sender] >= amount, "Insufficient balance");
+
+        balances[msg.sender] -= amount;
+        payable(msg.sender).transfer(amount);
+
+        emit Withdraw(msg.sender, amount);
+    }
+
+    function getBalance() public view returns (uint256) {
+        return balances[msg.sender];
+    }
+}
+
+
+
+
+
+
+
+
+1. Open Remix IDE.
+2. Create a new file named BankAccount.sol.
+3. Paste the corrected code.
+4. Open Solidity Compiler.
+5. Select compiler version 0.8.20 or compatible version.
+6. Click Compile BankAccount.sol.
+7. Open Deploy & Run Transactions.
+8. Select Injected Provider - MetaMask and connect your testnet wallet.
+9. Select BankAccount and click Deploy.
+10. Confirm the transaction in MetaMask.
+
+
+
+
+
+1. Deposit 1 ETH
+At the bottom of your screen:
+- Value: 1
+- Unit: ether
+- Click the deposit → Transact button.
+Wait for the transaction to complete.
+2. Check your balance
+Under getBalance, click Call.
+Expected result
+1000000000000000000 wei = 1 ETH.
+3. Withdraw 0.2 ETH
+Your withdrawal amount is already entered correctly:
+
+200000000000000000
+
+Click withdraw → Transact.
+
+Wait for the transaction to complete.
+4. Check balance again
+Click getBalance → Call.
+
+Expected result:
+
+800000000000000000 wei = 0.8 ETH
+
+
+
+
+
+
+
+
+
+
+4. Important viva questions
+Q1. What is a smart contract?
+
+A smart contract is a program stored on a blockchain that executes automatically when conditions are satisfied.
+
+Q2. What is mapping?
+
+Mapping stores data in key-value pairs. Here, the customer's wallet address is the key and their balance is the value.
+
+Q3. What is msg.sender?
+
+It represents the address of the person who calls the function.
+
+Q4. What is msg.value?
+
+It represents the amount of Ether sent with a transaction.
+
+Q5. Why do we use payable?
+
+It allows a function to receive Ether.
+
+Q6. What is the use of require()?
+
+It checks a condition. If the condition is false, the transaction is reverted.
+
+Q7. What is the use of view?
+
+It allows a function to read data without modifying the blockchain state.
+
+Q8. What is the use of events?
+
+Events record important activities, such as deposits and withdrawals, in transaction logs.
+
+
+
+
+
+
+
+
+Great! 🎉 Your Bank Account smart contract is working successfully.
+
+Now let's understand the complete Solidity code line by line in simple English, so you can explain it to your teacher during your SPPU practical viva.
+
+# 1. Complete code explanation
+
+## Line 1: SPDX License
+
+```
+// SPDX-License-Identifier: MIT
+```
+
+- It specifies the license of the smart contract.
+- MIT is an open-source license.
+- It tells others how the code can be used.
+
+## Line 2: Solidity version
+
+```
+pragma solidity ^0.8.20;
+```
+
+- It specifies the Solidity compiler version.
+- `^0.8.20` means compiler version 0.8.20 or compatible newer versions below 0.9.0.
+
+## Line 3: Contract declaration
+
+```
+contract BankAccount {
+```
+
+- `contract` is a keyword used to create a smart contract.
+- `BankAccount` is the name of our contract.
+- It contains all the banking operations.
+
+## Line 4: Mapping
+
+```
+mapping(address => uint256) private balances;
+```
+
+This is one of the most important lines.
+
+- Mapping stores data in key-value pairs.
+- `address` represents the customer's wallet address.
+- `uint256` represents the customer's balance.
+- `private` means the mapping cannot be directly accessed by other contracts through its generated getter.
+
+Example:
+
+| Customer address | Balance |
+| ---------------- | ------- |
+| Customer A       | 3 ETH   |
+| Customer B       | 2 ETH   |
+| Customer C       | 5 ETH   |
+
+Each customer has a separate balance.
+
+## Line 5–6: Events
+
+```
+event Deposit(address indexed account, uint256 amount);
+event Withdraw(address indexed account, uint256 amount);
+```
+
+- Events record important activities.
+- `Deposit` records when money is deposited.
+- `Withdraw` records when money is withdrawn.
+- `indexed` makes the account address searchable in event logs.
+
+## 2. Deposit function
+
+```
+function deposit() public payable {
+    require(msg.value > 0, "Deposit amount must be greater than 0");
+    balances[msg.sender] += msg.value;
+    emit Deposit(msg.sender, msg.value);
+}
+```
+
+Let's understand each line:
+
+1\. `function deposit()`
+
+Creates a function named deposit.
+
+2\. `public`
+
+Anyone can call this function.
+
+3\. `payable`
+
+Allows the function to receive Ether.
+
+4\. `require(msg.value > 0, ...)`
+
+Checks that the deposited amount is greater than zero.
+
+5\. `msg.value`
+
+Represents the amount of Ether sent with the transaction, measured in wei.
+
+6\. `balances[msg.sender] += msg.value`
+
+Adds the deposited amount to the customer's existing balance.
+
+7\. `emit Deposit(...)`
+
+Records the deposit event.
+
+Example: Deposit 3 ETH
+
+Previous balance
+
+0 ETH
+
+Deposited amount
+
+3 ETH
+
+New balance
+
+# 3 ETH
+
+## 3. Withdraw function
+
+```
+function withdraw(uint256 amount) public {
+    require(amount > 0, "Withdraw amount must be greater than 0");
+    require(balances[msg.sender] >= amount, "Insufficient balance");
+
+    balances[msg.sender] -= amount;
+    payable(msg.sender).transfer(amount);
+
+    emit Withdraw(msg.sender, amount);
+}
+```
+
+Explanation:
+
+1. `withdraw(uint256 amount)` – creates a withdrawal function that accepts an amount.
+2. `require(amount > 0)` – checks that the withdrawal amount is greater than zero.
+3. `require(balances[msg.sender] >= amount)` – checks whether the customer has sufficient balance.
+4. `balances[msg.sender] -= amount` – subtracts the withdrawal amount from the customer's balance.
+5. `payable(msg.sender).transfer(amount)` – sends Ether to the customer's wallet.
+6. `emit Withdraw(...)` – records the withdrawal event.
+
+Example:
+
+| Details           | Amount  |
+| ----------------- | ------- |
+| Previous balance  | 3 ETH   |
+| Withdrawal        | 0.2 ETH |
+| Remaining balance | 2.8 ETH |
+
+Why do we use `payable(msg.sender)`?
+
+Because we need to send Ether to the customer's wallet address.
+
+Why do we use `transfer()`?
+
+It transfers Ether from the contract to the customer's address.
+
+## 4. Get Balance function
+
+```
+function getBalance() public view returns (uint256) {
+    return balances[msg.sender];
+}
+```
+
+Explanation:
+
+- `getBalance()` – function used to check the customer's balance.
+- `public` – anyone can call it.
+- `view` – reads data without changing the blockchain state.
+- `returns(uint256)` – returns the balance as an unsigned integer.
+- `return balances[msg.sender]` – displays the balance of the customer who called the function.
+
+For example, if the customer's balance is 2.8 ETH, the function returns:
+
+`2800000000000000000` wei.
+
+# 5. Overall working of the smart contract
+
+Customer / Wallet Address
+
+BankAccount Smart Contract
+
+Deposit Money
+
+Withdraw Money
+
+Show Balance
+
+Mapping: balances
+
+Stores each customer's wallet address and balance.
+
+Updated balance on blockchain
+
+# 6. Important viva questions and answers
+
+| Question                  | Simple answer                                                       |
+| ------------------------- | ------------------------------------------------------------------- |
+| What is Solidity?         | A programming language used to write smart contracts.               |
+| What is a smart contract? | A program stored and executed on a blockchain.                      |
+| What is mapping?          | It stores data in key-value pairs.                                  |
+| What is `msg.sender`?     | Address of the person calling the function.                         |
+| What is `msg.value`?      | Ether sent with a transaction, in wei.                              |
+| What is `payable`?        | It allows a function to receive Ether.                              |
+| What is `require()`?      | It checks conditions before execution.                              |
+| What is `uint256`?        | An unsigned integer of 256 bits.                                    |
+| What is an event?         | It records information in transaction logs.                         |
+| What is `view`?           | It reads data without modifying the contract state.                 |
+| What is Remix IDE?        | An online IDE used to write, compile and deploy Solidity contracts. |
+| What is Ether?            | The cryptocurrency used on the Ethereum network.                    |
+
+# 7. Test yourself – Practical viva
+
+Q1. Which keyword allows the deposit function to receive Ether?
+
+public
+
+payable
+
+private
+
+
+
+Q2. Which variable represents the caller's wallet address?
+
+msg.value
+
+uint256
+
+msg.sender
+
+
+
+Q3. Which function is used to display the customer's balance?
+
+deposit()
+
+getBalance()
+
+withdraw()
+
+
+
+Q4. What is the purpose of require()?
+
+To check a condition
+
+To create an event
+
+To deploy a contract
+
+
+
+Check my answers
+
+Practical conclusion (write in your journal):
+
+Thus, we successfully implemented and deployed a Bank Account smart contract using Solidity in Remix IDE. The contract performs deposit, withdrawal and balance checking operations using blockchain technology.
+
+
+
